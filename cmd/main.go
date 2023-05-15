@@ -1,7 +1,17 @@
 package main
 
-import "fmt"
+import (
+	"github.com/DevEdwinF/smartback.git/internal/config"
+	router "github.com/DevEdwinF/smartback.git/internal/infrastructure/api/router"
+
+	"github.com/labstack/echo/v4"
+)
 
 func main() {
-	fmt.Println("Hello word")
+	config.ConnectDB()
+	e := echo.New()
+
+	router.GlobalRouter(e)
+
+	e.Logger.Fatal(e.Start(":8080"))
 }
