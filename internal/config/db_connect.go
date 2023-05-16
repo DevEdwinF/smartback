@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"log"
 	"os"
 
@@ -39,6 +40,6 @@ func buildDSN() string {
 	dbName := os.Getenv("DB_NAME")
 	dbPort := os.Getenv("DB_PORT")
 
-	dsn := "host=" + dbHost + " user=" + dbUser + " password=" + dbPassword + " dbname=" + dbName + " port=" + dbPort + " sslmode=disable"
-	return dsn
+	dsn := "host=%s user=%s password=%s dbname=%s port=%s sslmode=disable"
+	return fmt.Sprintf(dsn, dbHost, dbUser, dbPassword, dbName, dbPort)
 }
