@@ -1,4 +1,4 @@
-CREATE TABLE Users (
+	CREATE TABLE Users (
 	id SERIAL PRIMARY KEY,
 	full_name VARCHAR(50),
 	email VARCHAR(100),
@@ -27,6 +27,7 @@ CREATE TABLE pqrs_sac(
 	campus VARCHAR(25),
 	languaje VARCHAR(9),
 	fk_pqrs_type_id integer
+	descreption_msg VARCHAR(255)
 )
 
 CREATE TABLE pqrs_type(
@@ -48,4 +49,10 @@ ALTER TABLE pqrs_sac
 ADD CONSTRAINT fk_document_type 
 FOREIGN KEY(fk_document_type)
 REFERENCES document_type(id)
+
+/* 
+/////////////////////////////////  */
+
+insert into document_type (id, document_type)
+values (1, 'cédula de extranjería')
 
