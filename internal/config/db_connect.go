@@ -6,16 +6,17 @@ import (
 	"os"
 
 	"github.com/joho/godotenv"
-	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
 var DB *gorm.DB
 
-func ConnectDB() {
-	loadEnv()
+/* func ConnectDB() {
+	// loadEnv()
 
-	dsn := buildDSN()
+	// dsn := buildDSN()
+	dsn := "user=postgres password=1234 dbname=smartdb port=5432 sslmode=disable"
+
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatalf("Error connecting to database: %v", err)
@@ -24,7 +25,16 @@ func ConnectDB() {
 	DB = db
 
 	log.Println("Database connection successfully established")
-}
+} */
+
+// func newDB() (*gorm.DB, error){
+// 	dsn := "user=postgres password=1234 dbname=smartdb port=5432 sslmode=disable"
+// 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+// 	if err != nil {
+// 		log.Fatalf("Error connecting to database: %v", err)
+// 	}
+// 	return db
+// }
 
 func loadEnv() {
 	err := godotenv.Load()
