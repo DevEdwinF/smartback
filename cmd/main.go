@@ -10,11 +10,6 @@ import (
 func main() {
 	config.ConnectDB()
 	e := echo.New()
-	// db, err := config.GetDBConnection()
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-	// defer db.Close()
 
 	router.GlobalRouter(e)
 
