@@ -6,3 +6,8 @@ type AttendanceEntity struct {
 	Position   string `json:"position"`
 	ScheduleId int    `json:"schedule_id"`
 }
+
+type ValidateSchedule struct {
+	PinEmployeFK string `json:"pinEmploye"`
+	Date         string `json:"date"`
+}

@@ -2,25 +2,12 @@ package models
 
 import (
 	"time"
-
-	"github.com/DevEdwinF/smartback.git/internal/config"
 )
 
 type AttendanceModel struct {
 	ID        int64 `json:"document"`
 	Arrival   time.Time
 	Departure time.Time
-}
-
-func GetAllAttendance() ([]AttendanceModel, error) {
-	var attendances []AttendanceModel
-
-	err := config.DB.Table("attendance a").Select("c.name, a.* ").Joins("INNER JOIN colaborators e on c.id = a.fk_document_id").Find(&attendances).Error
-	if err != nil {
-		return nil, err
-	}
-
-	return attendances, nil
 }
 
 /*
