@@ -5,9 +5,10 @@ import (
 )
 
 type AttendanceModel struct {
-	ID        int64 `json:"document"`
-	Arrival   time.Time
-	Departure time.Time
+	ID        int
+	Arrival   *time.Time
+	Departure *time.Time
+	CreatedAt time.Time
 }
 
 /*

@@ -8,6 +8,7 @@ import (
 	"time"
 
 	models "github.com/DevEdwinF/smartback.git/internal/app/models/attendance"
+	modelsColaborator "github.com/DevEdwinF/smartback.git/internal/app/models/user"
 	"github.com/DevEdwinF/smartback.git/internal/config"
 	entity "github.com/DevEdwinF/smartback.git/internal/infrastructure/entity/attendance"
 	"github.com/labstack/echo/v4"
@@ -16,17 +17,18 @@ import (
 func getAllAttendanceController() {
 
 }
+
 func SaveRegisterAttendance(c echo.Context) error {
-	var attendance entity.Attendance
+	var attendance entity.AttendanceEntity
 	err := c.Bind(&attendance)
 
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	var validateAttendance models.Attendances
-	if err := mysql.DB.Model(&validateAttendance).Where("pin_employe_fk = ? AND DATE(created_at) = CURDATE()", attendance.PinEmployeFK).Scan(&validateAttendance).Error; err != nil {
-		return echo.NewHTTPError(http.StatusNotFound, "Empleado no se encuentra registrado")
+	var validateAttendance models.AttendanceModel
+	if err := config.DB.Model(&validateAttendance).Where("fk_document_id = ? AND DATE(created_at) = CURDATE()", attendance.ID).Scan(&validateAttendance).Error; err != nil {
+		return echo.NewHTTPError(http.StatusNotFound, "Ops, este documento no se encuentra registrado")
 	}
 	//location, _ := time.LoadLocation("America/Bogota")
 	timeNow := time.Now() /*.In(location)*/
@@ -35,14 +37,14 @@ func SaveRegisterAttendance(c echo.Context) error {
 
 	if attendance.State == "arrival" {
 		if validateAttendance.ID == 0 && validateAttendance.Arrival == nil {
-			modelsAttendance := models.Attendances{
-				PinEmployeFK: attendance.PinEmployeFK,
-				Photo:        attendance.Photo,
-				Arrival:      &timeNow,
-				CreatedAt:    timeNow,
+			modelsAttendance := models.AttendanceModel{
+				ID: attendance.ID,
+				// Photo:        attendance.Photo,
+				Arrival:   &timeNow,
+				CreatedAt: timeNow,
 			}
 
-			err = mysql.DB.Create(&modelsAttendance).Error
+			err = config.DB.Create(&modelsAttendance).Error
 			if err != nil {
 				return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 			}
@@ -53,9 +55,7 @@ func SaveRegisterAttendance(c echo.Context) error {
 	}
 
 	block := validateAttendance.Arrival == nil
-	blockBreakInit := validateAttendance.BreakInit == nil
-	blockBreakInitTwo := validateAttendance.BreakInit == nil
-	blockBreakIn := validateAttendance.BreakIn == nil
+	// blockTransfer := validateAttendance.Departure == nil
 
 	switch attendance.State {
 	case "arrival":
@@ -63,68 +63,10 @@ func SaveRegisterAttendance(c echo.Context) error {
 			return echo.NewHTTPError(http.StatusBadRequest, "Ya se ha registrado el estado entrada")
 		}
 		break
-	case "breakInit":
+	case "transfer":
 		if block {
 			return echo.NewHTTPError(http.StatusBadRequest, "Debe registrar la llegada primero")
 		}
-		if validateAttendance.BreakInit != nil {
-			return echo.NewHTTPError(http.StatusBadRequest, "Ya se ha registrado la salida a pausa")
-		}
-		validateAttendance.BreakInit = &timeNow
-		break
-	case "breakEnd":
-		if block {
-			return echo.NewHTTPError(http.StatusBadRequest, "Debe registrar la llegada primero")
-		}
-		if blockBreakInit {
-			return echo.NewHTTPError(http.StatusBadRequest, "Debe registrar la salida a pausa primero")
-		}
-		if validateAttendance.BreakEnd != nil {
-			return echo.NewHTTPError(http.StatusBadRequest, "Ya se ha registrado la entrada a la pausa")
-		}
-		validateAttendance.BreakEnd = &timeNow
-		break
-	case "breakInitTwo":
-		if block {
-			return echo.NewHTTPError(http.StatusBadRequest, "Debe registrar la llegada primero")
-		}
-		if validateAttendance.BreakInitTwo != nil {
-			return echo.NewHTTPError(http.StatusBadRequest, "Ya se ha registrado la salida a pausa")
-		}
-		validateAttendance.BreakInitTwo = &timeNow
-		break
-	case "breakEndTwo":
-		if block {
-			return echo.NewHTTPError(http.StatusBadRequest, "Debe registrar la llegada primero")
-		}
-		if blockBreakInitTwo {
-			return echo.NewHTTPError(http.StatusBadRequest, "Debe registrar la salida a pausa primero")
-		}
-		if validateAttendance.BreakEndTwo != nil {
-			return echo.NewHTTPError(http.StatusBadRequest, "Ya se ha registrado la entrada a la pausa")
-		}
-		validateAttendance.BreakEndTwo = &timeNow
-		break
-	case "breakIn":
-		if block {
-			return echo.NewHTTPError(http.StatusBadRequest, "Debe registrar la llegada primero")
-		}
-		if validateAttendance.BreakIn != nil {
-			return echo.NewHTTPError(http.StatusBadRequest, "Ya se ha registrado la salida a almuerzo")
-		}
-		validateAttendance.BreakIn = &timeNow
-		break
-	case "breakOut":
-		if block {
-			return echo.NewHTTPError(http.StatusBadRequest, "Debe registrar la llegada primero")
-		}
-		if blockBreakIn {
-			return echo.NewHTTPError(http.StatusBadRequest, "Debe registrar la salida a almuerzo primero")
-		}
-		if validateAttendance.BreakOut != nil {
-			return echo.NewHTTPError(http.StatusBadRequest, "Ya se ha registrado la entrada de almuerzo")
-		}
-		validateAttendance.BreakOut = &timeNow
 		break
 	case "departure":
 		if block {
@@ -181,8 +123,8 @@ func ValidateHorary(c echo.Context) error {
 func ValidateEmploye(c echo.Context) error {
 	id := c.Param("pin")
 
-	var employe models.
-	if err := mysql.DB.Table("employes").Where("pin_employe = ?", id).Scan(&employe).Error; err != nil {
+	var employe modelsColaborator.Colaborators
+	if err := config.DB.Table("employes").Where("pin_employe = ?", id).Scan(&employe).Error; err != nil {
 		return echo.NewHTTPError(http.StatusNotFound, err.Error())
 	}
 	if employe.ID == 0 {
