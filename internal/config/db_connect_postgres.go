@@ -13,7 +13,7 @@ import (
 var DB *gorm.DB
 
 func ConnectDB() {
-	// loadEnv()z
+	loadEnv()
 
 	dsn := buildDSN()
 	// dsn := "user=postgres password=1234 dbname=smartdb port=5432 sslmode=disable"

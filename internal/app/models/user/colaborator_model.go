@@ -8,6 +8,7 @@ import (
 
 type Colaborators struct {
 	ID       int
+	document string
 	Name     string
 	email    string
 	CreateAt time.Time

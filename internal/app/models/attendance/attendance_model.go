@@ -4,11 +4,12 @@ import (
 	"time"
 )
 
-type AttendanceModel struct {
-	ID        int
-	Arrival   *time.Time
-	Departure *time.Time
-	CreatedAt time.Time
+type Attendance struct {
+	ID           int
+	FkDocumentId string
+	Arrival      *time.Time
+	Departure    *time.Time
+	CreatedAt    time.Time
 }
 
 /*

@@ -1,5 +1,7 @@
 package entity
 
+import "time"
+
 // type AttendanceEntity struct {
 // 	ID         int64  `json:"document"`
 // 	Name       string `json:"name"`
@@ -8,11 +10,13 @@ package entity
 // }
 
 type AttendanceEntity struct {
-	ID    int    `json:"document"`
-	State string `json:"state"`
+	FkDocumentId string `json:"document"`
+	// Document  string    `json:"document"`
+	State     string    `json:"state"`
+	CreatedAt time.Time `json:"date"`
 }
 
 type ValidateSchedule struct {
-	ID   string `json:"document"`
+	Id   string `json:"document"`
 	Date string `json:"date"`
 }

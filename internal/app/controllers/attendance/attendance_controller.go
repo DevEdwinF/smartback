@@ -26,8 +26,8 @@ func SaveRegisterAttendance(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	var validateAttendance models.AttendanceModel
-	if err := config.DB.Model(&validateAttendance).Where("fk_document_id = ? AND DATE(created_at) = CURDATE()", attendance.ID).Scan(&validateAttendance).Error; err != nil {
+	var validateAttendance models.Attendance
+	if err := config.DB.Model(&validateAttendance).Where("fk_document_id = ? AND DATE(created_at) = CURRENT_DATE", attendance.FkDocumentId).Scan(&validateAttendance).Error; err != nil {
 		return echo.NewHTTPError(http.StatusNotFound, "Ops, este documento no se encuentra registrado")
 	}
 	//location, _ := time.LoadLocation("America/Bogota")
@@ -37,8 +37,8 @@ func SaveRegisterAttendance(c echo.Context) error {
 
 	if attendance.State == "arrival" {
 		if validateAttendance.ID == 0 && validateAttendance.Arrival == nil {
-			modelsAttendance := models.AttendanceModel{
-				ID: attendance.ID,
+			modelsAttendance := models.Attendance{
+				FkDocumentId: attendance.FkDocumentId,
 				// Photo:        attendance.Photo,
 				Arrival:   &timeNow,
 				CreatedAt: timeNow,
@@ -55,7 +55,7 @@ func SaveRegisterAttendance(c echo.Context) error {
 	}
 
 	block := validateAttendance.Arrival == nil
-	// blockTransfer := validateAttendance.Departure == nil
+	// block := validateAttendance.Departure == nil
 
 	switch attendance.State {
 	case "arrival":
@@ -63,11 +63,11 @@ func SaveRegisterAttendance(c echo.Context) error {
 			return echo.NewHTTPError(http.StatusBadRequest, "Ya se ha registrado el estado entrada")
 		}
 		break
-	case "transfer":
-		if block {
-			return echo.NewHTTPError(http.StatusBadRequest, "Debe registrar la llegada primero")
-		}
-		break
+	// case "transfer":
+	// 	if block {
+	// 		return echo.NewHTTPError(http.StatusBadRequest, "Debe registrar la llegada primero")
+	// 	}
+	// 	break
 	case "departure":
 		if block {
 			return echo.NewHTTPError(http.StatusBadRequest, "Debe registrar la llegada primero")
@@ -88,43 +88,40 @@ func SaveRegisterAttendance(c echo.Context) error {
 	})
 }
 
-func GetAllAttendance() ([]models.AttendanceModel, error) {
-	var attendances []models.AttendanceModel
+func GetAllAttendance(c echo.Context) error {
 
-	err := config.DB.Table("attendance a").Select("c.name, a.* ").Joins("INNER JOIN colaborators e on c.id = a.fk_document_id").Find(&attendances).Error
-	if err != nil {
-		return nil, err
-	}
+	attendance := []models.Attendance{}
 
-	return attendances, nil
+	config.DB.Table("attendance a").Select("c.name, a.* ").Joins("INNER JOIN colaborators e on c.id = a.fk_document_id").Find(&attendance)
+
+	return c.JSON(http.StatusOK, attendance)
 }
 
-func ValidateHorary(c echo.Context) error {
+func ValidateSchedule(c echo.Context) error {
 
 	body, err := ioutil.ReadAll(c.Request().Body)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
-
-	var validateHorary entity.ValidateSchedule
-	err = json.Unmarshal(body, &validateHorary)
+	var validateSchedule entity.ValidateSchedule
+	err = json.Unmarshal(body, &validateSchedule)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
 	var arrival time.Time
 
-	config.DB.Raw("select arrival from attendances a where pin_employe_fk = ? and date_format(arrival, '%d-%m-%Y') = date_format(?, '%d-%m-%Y')",
-		validateHorary.PinEmployeFK, validateHorary.Date).Scan(&arrival)
+	config.DB.Raw("select arrival from attendance a where fk_document_id = ? and date_format(arrival, '%d-%m-%Y') = date_format(?, '%d-%m-%Y')",
+		validateSchedule.Id, validateSchedule.Date).Scan(&arrival)
 
 	return c.JSON(http.StatusOK, arrival)
 }
 
-func ValidateEmploye(c echo.Context) error {
-	id := c.Param("pin")
+func ValidateColaborator(c echo.Context) error {
+	id := c.Param("document")
 
 	var employe modelsColaborator.Colaborators
-	if err := config.DB.Table("employes").Where("pin_employe = ?", id).Scan(&employe).Error; err != nil {
+	if err := config.DB.Table("colaborators").Where("id = ?", id).Scan(&employe).Error; err != nil {
 		return echo.NewHTTPError(http.StatusNotFound, err.Error())
 	}
 	if employe.ID == 0 {
