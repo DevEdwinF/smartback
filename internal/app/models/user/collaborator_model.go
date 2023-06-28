@@ -2,21 +2,14 @@ package models
 
 import (
 	"time"
-
-	models "github.com/DevEdwinF/smartback.git/internal/app/models/attendance"
 )
 
-type Colaborators struct {
-	ID       int
-	document string
+type Collaborators struct {
+	// ID       int
+	Document int
 	Name     string
-	email    string
+	Email    string
 	CreateAt time.Time
-}
-
-type EmployeeWithSchedule struct {
-	Colaborators
-	models.Schedule
 }
 
 // type Employe struct {

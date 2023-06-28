@@ -2,7 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
+	"errors"
 	"io/ioutil"
 	"net/http"
 	"time"
@@ -12,6 +12,7 @@ import (
 	"github.com/DevEdwinF/smartback.git/internal/config"
 	entity "github.com/DevEdwinF/smartback.git/internal/infrastructure/entity/attendance"
 	"github.com/labstack/echo/v4"
+	"gorm.io/gorm"
 )
 
 func getAllAttendanceController() {
@@ -26,68 +27,63 @@ func SaveRegisterAttendance(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
+	timeNow := time.Now().Local().Truncate(24 * time.Hour) // Truncate para obtener la fecha actual sin la parte horaria
+
+	// Verificar si ya existe un registro para el documento en la fecha actual
 	var validateAttendance models.Attendance
-	if err := config.DB.Model(&validateAttendance).Where("fk_document_id = ? AND DATE(created_at) = CURRENT_DATE", attendance.FkDocumentId).Scan(&validateAttendance).Error; err != nil {
-		return echo.NewHTTPError(http.StatusNotFound, "Ops, este documento no se encuentra registrado")
-	}
-	//location, _ := time.LoadLocation("America/Bogota")
-	timeNow := time.Now() /*.In(location)*/
+	err = config.DB.Model(&validateAttendance).
+		Where("fk_document_id = ? AND DATE(created_at) = ?", attendance.FkDocumentId, timeNow.Format("2006-01-02")).
+		First(&validateAttendance).Error
 
-	fmt.Println(timeNow)
-
-	if attendance.State == "arrival" {
-		if validateAttendance.ID == 0 && validateAttendance.Arrival == nil {
-			modelsAttendance := models.Attendance{
-				FkDocumentId: attendance.FkDocumentId,
-				// Photo:        attendance.Photo,
-				Arrival:   &timeNow,
-				CreatedAt: timeNow,
-			}
-
-			err = config.DB.Create(&modelsAttendance).Error
-			if err != nil {
-				return echo.NewHTTPError(http.StatusBadRequest, err.Error())
-			}
-			return c.JSON(http.StatusOK, map[string]string{
-				"message": "Registro creado exitosamente",
-			})
+	if err != nil {
+		if !errors.Is(err, gorm.ErrRecordNotFound) {
+			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 		}
 	}
-
-	block := validateAttendance.Arrival == nil
-	// block := validateAttendance.Departure == nil
 
 	switch attendance.State {
 	case "arrival":
-		if validateAttendance.Arrival != nil {
-			return echo.NewHTTPError(http.StatusBadRequest, "Ya se ha registrado el estado entrada")
+		if validateAttendance.ID != 0 || validateAttendance.Arrival != nil {
+			return echo.NewHTTPError(http.StatusBadRequest, "Ya se ha registrado la entrada")
 		}
-		break
-	// case "transfer":
-	// 	if block {
-	// 		return echo.NewHTTPError(http.StatusBadRequest, "Debe registrar la llegada primero")
-	// 	}
-	// 	break
+
+		modelsAttendance := models.Attendance{
+			FkDocumentId: attendance.FkDocumentId,
+			Arrival:      &timeNow,
+			CreatedAt:    timeNow,
+		}
+
+		err = config.DB.Create(&modelsAttendance).Error
+		if err != nil {
+			return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+		}
+
+		return c.JSON(http.StatusOK, map[string]string{
+			"message": "Registro de entrada creado exitosamente",
+		})
+
 	case "departure":
-		if block {
-			return echo.NewHTTPError(http.StatusBadRequest, "Debe registrar la llegada primero")
+		if validateAttendance.ID == 0 {
+			return echo.NewHTTPError(http.StatusBadRequest, "Debe registrar la entrada primero")
 		}
 		if validateAttendance.Departure != nil {
-			return echo.NewHTTPError(http.StatusBadRequest, "Ya se ha registrado el estado salida")
+			return echo.NewHTTPError(http.StatusBadRequest, "Ya se ha registrado la salida")
 		}
+
 		validateAttendance.Departure = &timeNow
-		break
+
+		err = config.DB.Updates(&validateAttendance).Error
+		if err != nil {
+			return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+		}
+
+		return c.JSON(http.StatusOK, map[string]string{
+			"message": "Registro de salida actualizado exitosamente",
+		})
 	}
 
-	err = config.DB.Updates(&validateAttendance).Error
-	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
-	}
-	return c.JSON(http.StatusOK, map[string]string{
-		"message": "Registro actualizado exitosamente",
-	})
+	return echo.NewHTTPError(http.StatusBadRequest, "Estado inválido")
 }
-
 func GetAllAttendance(c echo.Context) error {
 
 	attendance := []models.Attendance{}
@@ -118,13 +114,13 @@ func ValidateSchedule(c echo.Context) error {
 }
 
 func ValidateColaborator(c echo.Context) error {
-	id := c.Param("document")
+	id := c.Param("doc")
 
-	var employe modelsColaborator.Colaborators
-	if err := config.DB.Table("colaborators").Where("id = ?", id).Scan(&employe).Error; err != nil {
+	var employe modelsColaborator.Collaborators
+	if err := config.DB.Table("collaborators").Where("document = ?", id).Scan(&employe).Error; err != nil {
 		return echo.NewHTTPError(http.StatusNotFound, err.Error())
 	}
-	if employe.ID == 0 {
+	if employe.Document == 0 {
 		return echo.NewHTTPError(http.StatusNotFound, "Empleado no se encuentra registrado")
 	}
 	return c.JSON(http.StatusOK, employe)

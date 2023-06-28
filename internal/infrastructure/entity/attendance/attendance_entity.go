@@ -10,10 +10,9 @@ import "time"
 // }
 
 type AttendanceEntity struct {
-	FkDocumentId string `json:"document"`
-	// Document  string    `json:"document"`
-	State     string    `json:"state"`
-	CreatedAt time.Time `json:"date"`
+	FkDocumentId int       `json:"document"`
+	State        string    `json:"state"`
+	CreatedAt    time.Time `json:"date"`
 }
 
 type ValidateSchedule struct {

@@ -8,5 +8,6 @@ import (
 func AuthRoutes(e *echo.Echo) {
 	group := e.Group("/api/attendance")
 	group.POST("/register", controllers.SaveRegisterAttendance)
+	group.GET("/validate/:doc", controllers.ValidateColaborator)
 	group.GET("/all", controllers.GetAllAttendance)
 }
