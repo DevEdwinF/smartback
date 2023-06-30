@@ -2,6 +2,8 @@ package models
 
 import (
 	"time"
+
+	models "github.com/DevEdwinF/smartback.git/internal/app/models/schedule"
 )
 
 type Collaborators struct {
@@ -10,6 +12,11 @@ type Collaborators struct {
 	Name     string
 	Email    string
 	CreateAt time.Time
+}
+
+type CollaboratorsData struct {
+	Collaborators
+	models.ScheduleModel
 }
 
 // type Employe struct {

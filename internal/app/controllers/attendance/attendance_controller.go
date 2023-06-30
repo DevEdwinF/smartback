@@ -27,9 +27,8 @@ func SaveRegisterAttendance(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	timeNow := time.Now().Local().Truncate(24 * time.Hour) // Truncate para obtener la fecha actual sin la parte horaria
+	timeNow := time.Now()
 
-	// Verificar si ya existe un registro para el documento en la fecha actual
 	var validateAttendance models.Attendance
 	err = config.DB.Model(&validateAttendance).
 		Where("fk_document_id = ? AND DATE(created_at) = ?", attendance.FkDocumentId, timeNow.Format("2006-01-02")).
@@ -84,11 +83,12 @@ func SaveRegisterAttendance(c echo.Context) error {
 
 	return echo.NewHTTPError(http.StatusBadRequest, "Estado inválido")
 }
+
 func GetAllAttendance(c echo.Context) error {
 
-	attendance := []models.Attendance{}
+	attendance := []entity.UserAttendanceData{}
 
-	config.DB.Table("attendance a").Select("c.name, a.* ").Joins("INNER JOIN colaborators e on c.id = a.fk_document_id").Find(&attendance)
+	config.DB.Table("attendances a").Select("c.name,c.email, a.* ").Joins("INNER JOIN collaborators c on c.document = a.fk_document_id").Find(&attendance)
 
 	return c.JSON(http.StatusOK, attendance)
 }
@@ -124,5 +124,4 @@ func ValidateColaborator(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusNotFound, "Empleado no se encuentra registrado")
 	}
 	return c.JSON(http.StatusOK, employe)
-
 }

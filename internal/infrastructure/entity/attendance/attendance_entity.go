@@ -15,6 +15,15 @@ type AttendanceEntity struct {
 	CreatedAt    time.Time `json:"date"`
 }
 
+type UserAttendanceData struct {
+	FkDocumentId int        `json:"document"`
+	Name         string     `json:"name"`
+	Email        string     `json:"email"`
+	Arrival      *time.Time `json:"arrival"`
+	Departure    *time.Time `json:"departure"`
+	CreatedAt    time.Time  `json:"date"`
+}
+
 type ValidateSchedule struct {
 	Id   string `json:"document"`
 	Date string `json:"date"`
