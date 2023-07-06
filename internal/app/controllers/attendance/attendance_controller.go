@@ -48,6 +48,7 @@ func SaveRegisterAttendance(c echo.Context) error {
 
 		modelsAttendance := models.Attendance{
 			FkDocumentId: attendance.FkDocumentId,
+			Photo:        attendance.Photo,
 			Arrival:      &timeNow,
 			CreatedAt:    timeNow,
 		}

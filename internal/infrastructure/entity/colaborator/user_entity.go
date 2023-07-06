@@ -16,6 +16,7 @@ type CollaboratorsEntity struct {
 	Document   int       `json:"document"`
 	Name       string    `json:"name"`
 	Email      string    `json:"email"`
+	Position   string    `json:"position"`
 	ScheduleId int       `json:"fk_schedule_id"`
 	CreateAt   time.Time `json:"date"`
 }

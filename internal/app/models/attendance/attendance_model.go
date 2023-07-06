@@ -9,5 +9,6 @@ type Attendance struct {
 	FkDocumentId int
 	Arrival      *time.Time
 	Departure    *time.Time
+	Photo        string
 	CreatedAt    time.Time
 }

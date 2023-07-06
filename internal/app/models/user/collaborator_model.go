@@ -11,6 +11,7 @@ type Collaborators struct {
 	Document int
 	Name     string
 	Email    string
+	Position string
 	CreateAt time.Time
 }
 

@@ -4,6 +4,7 @@ create table collaborators(
     document int primary key,			
 	name varchar(60) not null,
 	email varchar(60) not null,
+	positon varchar(45) not null,
 	create_at timestamp
 );
 
@@ -11,6 +12,7 @@ create table attendances(
 	id serial primary key,
 	arrival timestamp,
 	departure timestamp,
+	photo bytea,
     created_at timestamp
 )
 
