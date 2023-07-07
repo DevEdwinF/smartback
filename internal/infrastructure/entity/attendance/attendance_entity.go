@@ -12,6 +12,7 @@ import "time"
 type AttendanceEntity struct {
 	FkDocumentId int       `json:"document"`
 	State        string    `json:"state"`
+	Location     string    `josn:"location"`
 	Photo        string    `json:"photo"`
 	CreatedAt    time.Time `json:"date"`
 }
@@ -20,6 +21,7 @@ type UserAttendanceData struct {
 	FkDocumentId int        `json:"document"`
 	Name         string     `json:"name"`
 	Email        string     `json:"email"`
+	Location     string     `josn:"location"`
 	Arrival      *time.Time `json:"arrival"`
 	Departure    *time.Time `json:"departure"`
 	Photo        string     `json:"photo"`

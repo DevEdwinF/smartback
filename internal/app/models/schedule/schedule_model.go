@@ -1,7 +1,11 @@
 package models
 
+import "time"
+
 type ScheduleModel struct {
-	Id        int
-	Arrival   string
-	Departure string
+	Id            int
+	Day           string
+	ArrivalTime   time.Time
+	DepartureTime time.Time
+	FkDocument    int
 }

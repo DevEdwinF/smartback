@@ -9,8 +9,8 @@ func CollaboratorRoutes(e *echo.Echo) {
 
 	group := e.Group("/api/collaborator")
 
-	group.POST("/save", controller.SaveCollaborator)
+	// group.POST("/save", controller.SaveCollaborator)
 	group.GET("/all", controller.GetAllCollaborators)
-	group.GET("find/:doc", controller.GetCollaborator)
+	group.GET("/find/:document", controller.GetCollaborator)
 	group.DELETE("/delete/:doc", controller.DeleteCollaborator)
 }
