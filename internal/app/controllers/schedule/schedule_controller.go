@@ -58,7 +58,7 @@ func GetAllCollaboratorsSchedule(c echo.Context) error {
 }
 
 func SaveSchedule(c echo.Context) error {
-	var schedule entity.ScheduleEntity
+	var schedule entity.Schedule
 	if err := c.Bind(&schedule); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "Formato de datos inválido")
 	}
@@ -72,23 +72,23 @@ func SaveSchedule(c echo.Context) error {
 	return c.JSON(http.StatusOK, schedule)
 }
 
-func EditSchedule(c echo.Context) error {
-	idParam := c.Param("id")
-	var schedule entity.ScheduleEntity
+func UpdateSchedule(c echo.Context) error {
+	id := c.Param("id")
+	var schedule entity.Schedule
 
-	if err := config.DB.Table("schedule").First(&schedule, "id = ?", idParam).Error; err != nil {
+	if err := config.DB.Table("schedule").First(&schedule, "id = ?", id).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return echo.NewHTTPError(http.StatusNotFound, "No se encuentra el horario")
 		}
 		return echo.NewHTTPError(http.StatusInternalServerError, "Error en el servidor")
 	}
 
-	updatedSchedule := entity.ScheduleEntity{}
+	updatedSchedule := models.Schedule{}
 	if err := c.Bind(&updatedSchedule); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "Formato de datos inválido")
 	}
 
-	result := config.DB.Model(&schedule).Updates(updatedSchedule)
+	result := config.DB.Table("schedule").Model(&schedule).Updates(updatedSchedule)
 
 	if result.Error != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, "Error al actualizar el horario")
@@ -98,7 +98,7 @@ func EditSchedule(c echo.Context) error {
 }
 
 func AssignScheduleToCollaborator(c echo.Context) error {
-	var schedule entity.ScheduleEntity
+	var schedule entity.Schedule
 
 	if err := c.Bind(&schedule); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "Formato de datos inválido")
@@ -113,7 +113,6 @@ func AssignScheduleToCollaborator(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusInternalServerError, "Error en el servidor")
 	}
 
-	// Agregamos el horario
 	result := config.DB.Table("schedule").Create(&schedule)
 	if result.Error != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, "Error al asignar el horario")
@@ -123,13 +122,13 @@ func AssignScheduleToCollaborator(c echo.Context) error {
 }
 
 func DeleteSchedule(c echo.Context) error {
-	id := entity.ScheduleEntity{}
+	id := entity.Schedule{}
 
 	if err := c.Bind(&id); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	var schedule models.ScheduleModel
+	var schedule models.Schedule
 	if err := config.DB.First(&schedule, id.Id).Error; err != nil {
 		if gorm.IsRecordNotFoundError(err) {
 			return echo.NewHTTPError(http.StatusNotFound, "Schedule not found")

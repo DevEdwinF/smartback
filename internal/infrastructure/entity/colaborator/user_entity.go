@@ -23,5 +23,5 @@ type CollaboratorsEntity struct {
 
 type CollaboratorsDataEntity struct {
 	CollaboratorsEntity
-	entity.ScheduleEntity
+	entity.Schedule
 }

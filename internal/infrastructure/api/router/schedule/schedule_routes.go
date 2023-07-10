@@ -13,5 +13,6 @@ func ScheduleRouter(e *echo.Echo) {
 	group.GET("/all", controllers.GetAllCollaboratorsSchedule)
 	group.DELETE("/delete/:id", controllers.DeleteSchedule)
 	group.POST("/add", controllers.AssignScheduleToCollaborator)
+	group.PUT("/update/:id", controllers.UpdateSchedule)
 
 }

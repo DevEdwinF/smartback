@@ -2,7 +2,7 @@ package models
 
 import "time"
 
-type ScheduleModel struct {
+type Schedule struct {
 	Id            int
 	Day           string
 	ArrivalTime   time.Time

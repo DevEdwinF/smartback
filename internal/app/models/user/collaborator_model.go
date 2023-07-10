@@ -17,7 +17,7 @@ type Collaborators struct {
 
 type CollaboratorsData struct {
 	Collaborators
-	models.ScheduleModel
+	models.Schedule
 }
 
 // type Employe struct {
