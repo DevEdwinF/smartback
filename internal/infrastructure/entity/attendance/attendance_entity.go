@@ -32,3 +32,8 @@ type ValidateSchedule struct {
 	Id   string `json:"document"`
 	Date string `json:"date"`
 }
+
+type Translatedcollaborators struct {
+	FkDocumentId int       `json:"document"`
+	CreatedAt    time.Time `json:"date"`
+}

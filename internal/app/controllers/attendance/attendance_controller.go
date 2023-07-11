@@ -8,16 +8,12 @@ import (
 	"time"
 
 	models "github.com/DevEdwinF/smartback.git/internal/app/models/attendance"
-	modelsColaborator "github.com/DevEdwinF/smartback.git/internal/app/models/user"
+	modelsCollaborator "github.com/DevEdwinF/smartback.git/internal/app/models/user"
 	"github.com/DevEdwinF/smartback.git/internal/config"
 	entity "github.com/DevEdwinF/smartback.git/internal/infrastructure/entity/attendance"
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
 )
-
-func getAllAttendanceController() {
-
-}
 
 func SaveRegisterAttendance(c echo.Context) error {
 	var attendance entity.AttendanceEntity
@@ -115,10 +111,32 @@ func ValidateSchedule(c echo.Context) error {
 	return c.JSON(http.StatusOK, arrival)
 }
 
+func SaveTranslated(c echo.Context) error {
+	var translatedEntity entity.Translatedcollaborators
+	if err := c.Bind(&translatedEntity); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+
+	_, err := ValidateCollaborator(translatedEntity.FkDocumentId)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusNotFound, err.Error())
+	}
+
+	translatedEntity.CreatedAt = time.Now()
+
+	if err := config.DB.Create(&translatedEntity).Error; err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+
+	return c.JSON(http.StatusOK, map[string]string{
+		"message": "Registro de traducción creado exitosamente",
+	})
+}
+
 func ValidateColaborator(c echo.Context) error {
 	id := c.Param("doc")
 
-	var employe modelsColaborator.Collaborators
+	var employe modelsCollaborator.Collaborators
 	if err := config.DB.Table("collaborators").Where("document = ?", id).Scan(&employe).Error; err != nil {
 		return echo.NewHTTPError(http.StatusNotFound, err.Error())
 	}
@@ -126,4 +144,15 @@ func ValidateColaborator(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusNotFound, "Empleado no se encuentra registrado")
 	}
 	return c.JSON(http.StatusOK, employe)
+}
+
+func ValidateCollaborator(document int) (*modelsCollaborator.Collaborators, error) {
+	var collaborator modelsCollaborator.Collaborators
+	if err := config.DB.Table("collaborators").Where("document = ?", document).Scan(&collaborator).Error; err != nil {
+		return nil, err
+	}
+	if collaborator.Document == 0 {
+		return nil, echo.NewHTTPError(http.StatusNotFound, "Empleado no se encuentra registrado")
+	}
+	return &collaborator, nil
 }

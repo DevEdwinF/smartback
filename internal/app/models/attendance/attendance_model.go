@@ -13,3 +13,13 @@ type Attendance struct {
 	Photo        string
 	CreatedAt    time.Time
 }
+
+type translatedcollaborators struct {
+	ID           int
+	FkDocumentId int
+	CreatedAt    time.Time
+}
+
+// func (Translated) TableName() string {
+// 	return "translatedcollaborators"
+// }

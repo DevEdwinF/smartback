@@ -42,7 +42,16 @@ REFERENCES collaborators(document);
 INSERT INTO "schedule" ("day", "arrival_time", "departure_time")
 VALUES ('Monday', '07:00:00', '17:00:00');
 
+create table TranslatedCollaborators (
+	id serial primary key,
+	create_at timestamp
+)
 
+ALTER TABLE TranslatedCollaborators
+add column fk_collaborators_document integer,
+ADD CONSTRAINT fk_collaborators_document
+FOREIGN KEY (fk_collaborators_document)
+REFERENCES collaborators(document);
 
 
 SELECT * FROM "attendances" WHERE fk_document_id = 123 AND DATE(created_at) = CURRENT_DATE ORDER BY "attendances"."id" LIMIT 1
