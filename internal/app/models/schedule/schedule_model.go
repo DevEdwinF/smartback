@@ -2,8 +2,8 @@ package models
 
 import "time"
 
-type Schedule struct {
-	Id            int `gorm:"primaryKey"`
+type ScheduleModel struct {
+	Id            int
 	Day           string
 	ArrivalTime   time.Time
 	DepartureTime time.Time
