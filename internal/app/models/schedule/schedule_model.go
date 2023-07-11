@@ -10,6 +10,6 @@ type ScheduleModel struct {
 	FkDocument    int
 }
 
-func (Schedule) TableName() string {
+func (ScheduleModel) TableName() string {
 	return "schedule"
 }
