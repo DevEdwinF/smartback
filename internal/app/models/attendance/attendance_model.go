@@ -1,6 +1,7 @@
 package models
 
 import (
+	"database/sql"
 	"time"
 )
 
@@ -8,12 +9,12 @@ type Attendance struct {
 	ID           int
 	FkDocumentId int
 	Location     string
-	Arrival      *time.Time
-	Departure    *time.Time
+	Arrival      sql.NullString
+	Departure    sql.NullString
+	Late         bool
 	Photo        string
 	CreatedAt    time.Time
 }
-
 type translatedcollaborators struct {
 	ID           int
 	FkDocumentId int

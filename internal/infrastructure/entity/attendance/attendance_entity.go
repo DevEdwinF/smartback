@@ -13,19 +13,21 @@ type AttendanceEntity struct {
 	FkDocumentId int       `json:"document"`
 	State        string    `json:"state"`
 	Location     string    `josn:"location"`
+	Late         *bool     `json:"late"`
 	Photo        string    `json:"photo"`
 	CreatedAt    time.Time `json:"date"`
 }
 
 type UserAttendanceData struct {
-	FkDocumentId int        `json:"document"`
-	Name         string     `json:"name"`
-	Email        string     `json:"email"`
-	Location     string     `josn:"location"`
-	Arrival      *time.Time `json:"arrival"`
-	Departure    *time.Time `json:"departure"`
-	Photo        string     `json:"photo"`
-	CreatedAt    time.Time  `json:"date"`
+	FkDocumentId int       `json:"document"`
+	Name         string    `json:"name"`
+	Email        string    `json:"email"`
+	Location     string    `josn:"location"`
+	Arrival      string    `json:"arrival"`
+	Departure    string    `json:"departure"`
+	Late         *bool     `json:"late"`
+	Photo        string    `json:"photo"`
+	CreatedAt    time.Time `json:"date"`
 }
 
 type ValidateSchedule struct {

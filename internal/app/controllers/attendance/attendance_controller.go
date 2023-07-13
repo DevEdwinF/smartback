@@ -1,8 +1,10 @@
 package controllers
 
 import (
+	"database/sql"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"time"
@@ -23,7 +25,34 @@ func SaveRegisterAttendance(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
+	var schedule models.Schedule
+	err = config.DB.Model(&schedule).Where("fk_collaborators_document = ? AND day = ?", attendance.FkDocumentId, time.Now().Format("Monday")).First(&schedule).Error
+
+	if err != nil {
+		if !errors.Is(err, gorm.ErrRecordNotFound) {
+			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+		}
+	}
 	timeNow := time.Now()
+
+	var arrivalScheduled time.Time
+	if schedule.ArrivalTime != "" {
+		temp, err := time.Parse("15:04:05", schedule.ArrivalTime)
+		if err != nil {
+			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+		}
+		arrivalScheduled = time.Date(timeNow.Year(), timeNow.Month(), timeNow.Day(), temp.Hour(), temp.Minute(), temp.Second(), temp.Nanosecond(), timeNow.Location())
+	}
+
+	late := false
+
+	fmt.Println("Horario asignado", arrivalScheduled)
+	fmt.Println("tiempo actual", timeNow)
+
+	if !arrivalScheduled.IsZero() && timeNow.After(arrivalScheduled.Add(5*time.Minute)) {
+		fmt.Println("entra?")
+		late = true
+	}
 
 	var validateAttendance models.Attendance
 	err = config.DB.Model(&validateAttendance).
@@ -35,10 +64,9 @@ func SaveRegisterAttendance(c echo.Context) error {
 			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 		}
 	}
-
 	switch attendance.State {
 	case "arrival":
-		if validateAttendance.ID != 0 || validateAttendance.Arrival != nil {
+		if validateAttendance.ID != 0 || validateAttendance.Arrival.Valid {
 			return echo.NewHTTPError(http.StatusBadRequest, "Ya se ha registrado la entrada")
 		}
 
@@ -46,7 +74,8 @@ func SaveRegisterAttendance(c echo.Context) error {
 			FkDocumentId: attendance.FkDocumentId,
 			Photo:        attendance.Photo,
 			Location:     attendance.Location,
-			Arrival:      &timeNow,
+			Arrival:      sql.NullString{String: timeNow.Format("15:04:05"), Valid: true},
+			Late:         late,
 			CreatedAt:    timeNow,
 		}
 
@@ -63,11 +92,11 @@ func SaveRegisterAttendance(c echo.Context) error {
 		if validateAttendance.ID == 0 {
 			return echo.NewHTTPError(http.StatusBadRequest, "Debe registrar la entrada primero")
 		}
-		if validateAttendance.Departure != nil {
+		if validateAttendance.Departure.Valid {
 			return echo.NewHTTPError(http.StatusBadRequest, "Ya se ha registrado la salida")
 		}
 
-		validateAttendance.Departure = &timeNow
+		validateAttendance.Departure = sql.NullString{String: timeNow.Format("15:04:05"), Valid: true}
 
 		err = config.DB.Updates(&validateAttendance).Error
 		if err != nil {

@@ -29,7 +29,6 @@ func AssignSchedulesToCollaborator(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "Formato de datos inválido")
 	}
 
-	// Verificamos que el colaborador exista
 	var collaborator entityCollaborator.CollaboratorsDataEntity
 	if err := config.DB.Table("collaborators").Take(&collaborator, "document = ?", schedules[0].FkCollaboratorsDocument).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -39,7 +38,6 @@ func AssignSchedulesToCollaborator(c echo.Context) error {
 	}
 
 	for _, schedule := range schedules {
-		// Buscamos el horario existente o creamos uno nuevo
 		var existingSchedule entity.Schedule
 		result := config.DB.Table("schedule").Where("id = ?", schedule.Id).Assign(schedule).FirstOrCreate(&existingSchedule)
 
@@ -52,14 +50,10 @@ func AssignSchedulesToCollaborator(c echo.Context) error {
 }
 
 func DeleteSchedule(c echo.Context) error {
-	id := entity.Schedule{}
-
-	if err := c.Bind(&id); err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
-	}
+	id := c.Param("id")
 
 	var schedule models.Schedule
-	if err := config.DB.First(&schedule, id.Id).Error; err != nil {
+	if err := config.DB.First(&schedule, id).Error; err != nil {
 		if gorm.IsRecordNotFoundError(err) {
 			return echo.NewHTTPError(http.StatusNotFound, "Schedule not found")
 		}
@@ -69,5 +63,6 @@ func DeleteSchedule(c echo.Context) error {
 	if err := config.DB.Delete(&schedule).Error; err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
+
 	return c.JSON(http.StatusOK, "Schedule deleted")
 }

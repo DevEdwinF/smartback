@@ -1,12 +1,10 @@
 package models
 
-import "time"
-
 type Schedule struct {
 	Id            int `gorm:"primaryKey"`
 	Day           string
-	ArrivalTime   time.Time
-	DepartureTime time.Time
+	ArrivalTime   string
+	DepartureTime string
 	FkDocument    int
 }
 
