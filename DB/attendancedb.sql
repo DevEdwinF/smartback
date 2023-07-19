@@ -53,5 +53,23 @@ ADD CONSTRAINT fk_collaborators_document
 FOREIGN KEY (fk_collaborators_document)
 REFERENCES collaborators(document);
 
+create table Users (
+	id serial primary key,
+	name varchar(45) not null,
+	email varchar(45) not null,
+	password varchar(12) not null,
+	create_at timestamp
+)
+
+create table roles (
+	id serial primary key,
+	name varchar(25)
+)
+
+ALTER TABLE users
+ADD COLUMN fk_role_id INTEGER REFERENCES roles(id) ON DELETE CASCADE;
+
+INSERT INTO "users" ("name", "email", "fk_role_id", "password")
+VALUES ('Edwin Fernando Pirajan Arevalo', 'epirajan@smart.edu.co', 1, "123456");
 
 SELECT * FROM "attendances" WHERE fk_document_id = 123 AND DATE(created_at) = CURRENT_DATE ORDER BY "attendances"."id" LIMIT 1

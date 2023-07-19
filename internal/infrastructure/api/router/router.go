@@ -2,6 +2,7 @@ package router
 
 import (
 	attendance "github.com/DevEdwinF/smartback.git/internal/infrastructure/api/router/attendance"
+	"github.com/DevEdwinF/smartback.git/internal/infrastructure/api/router/auth"
 	collaborator "github.com/DevEdwinF/smartback.git/internal/infrastructure/api/router/collaborator"
 	"github.com/DevEdwinF/smartback.git/internal/infrastructure/api/router/schedule"
 	"github.com/DevEdwinF/smartback.git/internal/infrastructure/api/router/stats"
@@ -19,9 +20,10 @@ func GlobalRouter(e *echo.Echo) {
 		Format: "method=${method}, uri=${uri}, status=${status}\n",
 	}))
 	// pqrs.PqrsManageRoutes(e)
-	// auth.AuthRoutes(e)
+	auth.AuthRoutes(e)
 	attendance.AttendanceRoutes(e)
 	collaborator.CollaboratorRoutes(e)
+
 	schedule.ScheduleRouter(e)
 	stats.StatsRoutes(e)
 

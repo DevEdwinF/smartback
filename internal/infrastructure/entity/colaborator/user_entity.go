@@ -9,7 +9,7 @@ import (
 type User struct {
 	Document string `json:"document"`
 	Email    string `json:"email"`
-	Pass     string `json:"pass"`
+	Password string `json:"password"`
 }
 
 type CollaboratorsEntity struct {
