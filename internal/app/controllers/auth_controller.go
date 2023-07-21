@@ -3,7 +3,7 @@ package controllers
 import (
 	"net/http"
 
-	service "github.com/DevEdwinF/smartback.git/internal/app/services/auth"
+	"github.com/DevEdwinF/smartback.git/internal/app/services"
 	"github.com/DevEdwinF/smartback.git/internal/infrastructure/entity"
 	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
@@ -17,12 +17,12 @@ func Login(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	userModel, err := service.AuthenticateUser(userEntity.Email, userEntity.Password)
+	userModel, err := services.AuthenticateUser(userEntity.Email, userEntity.Password)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	token, err := service.GenerateToken(userModel)
+	token, err := services.GenerateToken(userModel)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, "Error generating token")
 	}
@@ -53,4 +53,18 @@ func ValidateToken(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "Error getting role")
 	}
 	return c.JSON(http.StatusOK, rol)
+}
+
+func Logout(c echo.Context) error {
+	authHeader := c.Request().Header.Get("Authorization")
+
+	if authHeader == "" || len(authHeader) < 7 || authHeader[:7] != "Bearer " {
+		return echo.NewHTTPError(http.StatusUnauthorized, "Invalid token")
+	}
+
+	tokenString := authHeader[7:]
+	services.InvalidateToken(tokenString)
+	return c.JSON(http.StatusOK, map[string]string{
+		"message": "Sesión cerrada con éxito",
+	})
 }

@@ -19,11 +19,10 @@ func GlobalRouter(e *echo.Echo) {
 	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
 		Format: "method=${method}, uri=${uri}, status=${status}\n",
 	}))
-	// pqrs.PqrsManageRoutes(e)
+
 	auth.AuthRoutes(e)
 	attendance.AttendanceRoutes(e)
 	collaborator.CollaboratorRoutes(e)
-
 	schedule.ScheduleRouter(e)
 	stats.StatsRoutes(e)
 

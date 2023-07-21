@@ -1,7 +1,7 @@
 package attendance
 
 import (
-	controllers "github.com/DevEdwinF/smartback.git/internal/app/controllers/attendance"
+	"github.com/DevEdwinF/smartback.git/internal/app/controllers"
 	"github.com/labstack/echo/v4"
 )
 

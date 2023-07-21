@@ -9,6 +9,7 @@ import (
 
 func main() {
 	config.ConnectDB()
+	config.KactusDB()
 	e := echo.New()
 
 	router.GlobalRouter(e)

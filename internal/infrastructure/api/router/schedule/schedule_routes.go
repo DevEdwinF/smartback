@@ -1,7 +1,7 @@
 package schedule
 
 import (
-	controllers "github.com/DevEdwinF/smartback.git/internal/app/controllers/schedule"
+	"github.com/DevEdwinF/smartback.git/internal/app/controllers"
 	"github.com/DevEdwinF/smartback.git/internal/config/middleware"
 	"github.com/labstack/echo/v4"
 )

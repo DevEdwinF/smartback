@@ -1,7 +1,7 @@
 package stats
 
 import (
-	controllers "github.com/DevEdwinF/smartback.git/internal/app/controllers/stats"
+	"github.com/DevEdwinF/smartback.git/internal/app/controllers"
 	"github.com/DevEdwinF/smartback.git/internal/config/middleware"
 	"github.com/labstack/echo/v4"
 )
