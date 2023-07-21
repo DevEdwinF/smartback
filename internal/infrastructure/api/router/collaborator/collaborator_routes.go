@@ -14,4 +14,5 @@ func CollaboratorRoutes(e *echo.Echo) {
 	group.GET("/all", controllers.GetAllCollaborators, middleware.AuthToken)
 	group.GET("/find/:document", controllers.GetCollaborator, middleware.AuthToken)
 	group.DELETE("/delete/:doc", controllers.DeleteCollaborator, middleware.AuthToken)
+	group.GET("/test", controllers.GetTest)
 }
