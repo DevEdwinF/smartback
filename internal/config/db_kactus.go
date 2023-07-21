@@ -14,7 +14,7 @@ func KactusDB() {
 	user := "ASISTENCIA"
 	pass := "*T3cn0l0g14-*"
 	port := "1433"
-	database := "gorm"
+	database := "KACTUS"
 
 	dsn := "sqlserver://" + user + ":" + pass + "@" + domain + ":" + port + "?database=" + database
 	db, err := gorm.Open(sqlserver.Open(dsn), &gorm.Config{})
