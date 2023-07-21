@@ -10,7 +10,7 @@ import (
 var KDB *gorm.DB
 
 func KactusDB() {
-	domain := "DB-SEVEN-KACTUS"
+	domain := "129.80.114.101"
 	user := "CAPACITA"
 	pass := "12345678"
 	port := "1433"
