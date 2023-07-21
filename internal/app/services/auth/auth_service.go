@@ -40,7 +40,7 @@ func GenerateToken(user *models.User) (string, error) {
 		return "", err
 	}
 
-	fmt.Println("Generated Token:", tokenString) // Agregar este log para imprimir el token generado
+	fmt.Println("Generated Token:", tokenString)
 
 	return tokenString, nil
 }

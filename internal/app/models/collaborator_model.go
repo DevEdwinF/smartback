@@ -1,10 +1,6 @@
 package models
 
-import (
-	"time"
-
-	models "github.com/DevEdwinF/smartback.git/internal/app/models/schedule"
-)
+import "time"
 
 type Collaborators struct {
 	// ID       int
@@ -17,7 +13,7 @@ type Collaborators struct {
 
 type CollaboratorsData struct {
 	Collaborators
-	models.Schedule
+	Schedule
 }
 
 // type Employe struct {

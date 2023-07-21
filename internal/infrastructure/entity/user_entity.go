@@ -1,10 +1,6 @@
 package entity
 
-import (
-	"time"
-
-	entity "github.com/DevEdwinF/smartback.git/internal/infrastructure/entity/schedule"
-)
+import "time"
 
 type User struct {
 	Document string `json:"document"`
@@ -23,5 +19,5 @@ type CollaboratorsEntity struct {
 
 type CollaboratorsDataEntity struct {
 	CollaboratorsEntity
-	entity.Schedule
+	Schedule
 }

@@ -4,16 +4,15 @@ import (
 	"errors"
 	"net/http"
 
-	models "github.com/DevEdwinF/smartback.git/internal/app/models/schedule"
+	"github.com/DevEdwinF/smartback.git/internal/app/models"
 	"github.com/DevEdwinF/smartback.git/internal/config"
-	entityCollaborator "github.com/DevEdwinF/smartback.git/internal/infrastructure/entity/colaborator"
-	entity "github.com/DevEdwinF/smartback.git/internal/infrastructure/entity/schedule"
+	"github.com/DevEdwinF/smartback.git/internal/infrastructure/entity"
 	"github.com/jinzhu/gorm"
 	"github.com/labstack/echo/v4"
 )
 
 func GetAllCollaboratorsSchedule(c echo.Context) error {
-	collaboratorWithSchedule := []entityCollaborator.CollaboratorsDataEntity{}
+	collaboratorWithSchedule := []entity.CollaboratorsDataEntity{}
 
 	config.DB.Table("collaborators").Select("*").
 		Joins("left join schedule on collaborators.document = schedule.fk_collaborators_document").
@@ -29,7 +28,7 @@ func AssignSchedulesToCollaborator(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "Formato de datos inválido")
 	}
 
-	var collaborator entityCollaborator.CollaboratorsDataEntity
+	var collaborator entity.CollaboratorsDataEntity
 	if err := config.DB.Table("collaborators").Take(&collaborator, "document = ?", schedules[0].FkCollaboratorsDocument).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return echo.NewHTTPError(http.StatusNotFound, "No se encuentra el colaborador")

@@ -4,9 +4,9 @@ import (
 	"errors"
 	"net/http"
 
-	models "github.com/DevEdwinF/smartback.git/internal/app/models/user"
+	"github.com/DevEdwinF/smartback.git/internal/app/models"
 	"github.com/DevEdwinF/smartback.git/internal/config"
-	entity "github.com/DevEdwinF/smartback.git/internal/infrastructure/entity/colaborator"
+	"github.com/DevEdwinF/smartback.git/internal/infrastructure/entity"
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
 )

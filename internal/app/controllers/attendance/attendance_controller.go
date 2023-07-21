@@ -9,10 +9,9 @@ import (
 	"net/http"
 	"time"
 
-	models "github.com/DevEdwinF/smartback.git/internal/app/models/attendance"
-	modelsCollaborator "github.com/DevEdwinF/smartback.git/internal/app/models/user"
+	"github.com/DevEdwinF/smartback.git/internal/app/models"
 	"github.com/DevEdwinF/smartback.git/internal/config"
-	entity "github.com/DevEdwinF/smartback.git/internal/infrastructure/entity/attendance"
+	"github.com/DevEdwinF/smartback.git/internal/infrastructure/entity"
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
 )
@@ -165,7 +164,7 @@ func SaveTranslated(c echo.Context) error {
 func ValidateColaborator(c echo.Context) error {
 	id := c.Param("doc")
 
-	var employe modelsCollaborator.Collaborators
+	var employe models.Collaborators
 	if err := config.DB.Table("collaborators").Where("document = ?", id).Scan(&employe).Error; err != nil {
 		return echo.NewHTTPError(http.StatusNotFound, err.Error())
 	}
@@ -175,8 +174,8 @@ func ValidateColaborator(c echo.Context) error {
 	return c.JSON(http.StatusOK, employe)
 }
 
-func ValidateCollaborator(document int) (*modelsCollaborator.Collaborators, error) {
-	var collaborator modelsCollaborator.Collaborators
+func ValidateCollaborator(document int) (*models.Collaborators, error) {
+	var collaborator models.Collaborators
 	if err := config.DB.Table("collaborators").Where("document = ?", document).Scan(&collaborator).Error; err != nil {
 		return nil, err
 	}

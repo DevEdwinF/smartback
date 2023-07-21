@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	service "github.com/DevEdwinF/smartback.git/internal/app/services/auth"
-	entity "github.com/DevEdwinF/smartback.git/internal/infrastructure/entity/colaborator"
+	"github.com/DevEdwinF/smartback.git/internal/infrastructure/entity"
 	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
 )
@@ -29,11 +29,9 @@ func Login(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"token": token,
-		"user":  userModel,
+		// "user":  userModel,
 	})
 }
-
-/* How created getUserInfoController */
 
 func GetUserInfo(c echo.Context) error {
 	user := c.Get("userToken").(*jwt.Token)
@@ -44,4 +42,15 @@ func GetUserInfo(c echo.Context) error {
 		"name":  claims["name"],
 		"role":  claims["role"],
 	})
+}
+
+func ValidateToken(c echo.Context) error {
+	user := c.Get("userToken").(*jwt.Token)
+	claims := user.Claims.(jwt.MapClaims)
+
+	rol, ok := claims["role"]
+	if !ok {
+		return echo.NewHTTPError(http.StatusBadRequest, "Error getting role")
+	}
+	return c.JSON(http.StatusOK, rol)
 }

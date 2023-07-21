@@ -9,5 +9,6 @@ import (
 func AuthRoutes(e *echo.Echo) {
 	group := e.Group("/auth")
 	group.POST("/login", controllers.Login)
-	group.GET("/user-info", controllers.GetUserInfo, middleware.AuthToken) // Verifica que el middleware esté configurado aquí
+	group.GET("/user-info", controllers.GetUserInfo, middleware.AuthToken)
+	group.GET("/validate-token", controllers.ValidateToken, middleware.AuthToken)
 }
