@@ -13,7 +13,7 @@ func KactusDB() {
 	domain := "DB-SEVEN-KACTUS"
 	user := "ASISTENCIA"
 	pass := "*T3cn0l0g14-+*"
-	port := "9930"
+	port := "1433"
 	database := "gorm"
 
 	dsn := "sqlserver://" + user + ":" + pass + "@" + domain + ":" + port + "?database=" + database
