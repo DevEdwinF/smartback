@@ -11,8 +11,8 @@ var KDB *gorm.DB
 
 func KactusDB() {
 	domain := "10.100.0.18"
-	user := "CAPACITA"
-	pass := "12345678"
+	user := "ASISTENCIA"
+	pass := "*T3cn0l0g14-*"
 	port := "1433"
 	database := "gorm"
 
