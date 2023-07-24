@@ -22,7 +22,7 @@ type UserAttendanceData struct {
 	FkDocumentId int       `json:"document"`
 	Name         string    `json:"name"`
 	Email        string    `json:"email"`
-	Location     string    `josn:"location"`
+	Location     string    `gorm:"location"`
 	Arrival      string    `json:"arrival"`
 	Departure    string    `json:"departure"`
 	Late         *bool     `json:"late"`

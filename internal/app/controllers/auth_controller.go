@@ -29,7 +29,7 @@ func Login(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"token": token,
-		// "user":  userModel,
+		"user":  userModel,
 	})
 }
 
@@ -38,9 +38,10 @@ func GetUserInfo(c echo.Context) error {
 	claims := user.Claims.(jwt.MapClaims)
 
 	return c.JSON(http.StatusOK, map[string]interface{}{
-		"email": claims["email"],
-		"name":  claims["name"],
-		"role":  claims["role"],
+		"email":    claims["email"],
+		"name":     claims["name"],
+		"role":     claims["role"],
+		"roleName": claims["roleName"],
 	})
 }
 

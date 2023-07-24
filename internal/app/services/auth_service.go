@@ -15,7 +15,11 @@ import (
 func AuthenticateUser(email, password string) (*models.User, error) {
 	var userModel models.User
 
-	if err := config.DB.Table("users").Where("email = ? and password = ?", email, password).Scan(&userModel).Error; err != nil {
+	if err := config.DB.Table("users").
+		Joins("INNER JOIN roles ON users.fk_role_id = roles.id").
+		Where("users.email = ? and users.password = ?", email, password).
+		Select("users.*, roles.name as role_name").
+		Scan(&userModel).Error; err != nil {
 		return nil, err
 	}
 
@@ -33,6 +37,7 @@ func GenerateToken(user *models.User) (string, error) {
 	claims["email"] = user.Email
 	claims["name"] = user.Name
 	claims["role"] = user.FkRoleId
+	claims["roleName"] = user.RoleName
 	claims["exp"] = time.Now().Add(time.Hour * 72).Unix()
 
 	tokenString, err := token.SignedString([]byte(os.Getenv("SECRET")))

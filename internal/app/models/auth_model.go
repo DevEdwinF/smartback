@@ -6,4 +6,5 @@ type User struct {
 	Name     string `json:"name"`
 	Password string `json:"password"`
 	FkRoleId string `json:"role"`
+	RoleName string `json:"role_name"`
 }
