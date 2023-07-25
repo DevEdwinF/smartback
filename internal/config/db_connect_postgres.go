@@ -27,7 +27,7 @@ func ConnectDB() {
 
 	DB = db
 
-	log.Println("Database connection successfully established")
+	log.Println("Conexión establecida con Postgress")
 }
 
 // func newDB() (*gorm.DB, error){
