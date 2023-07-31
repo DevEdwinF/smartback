@@ -7,6 +7,13 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+// func GetTest(c echo.Context) error {
+// 	colaborador := []BiEmple{}
+
+// 	config.KDB.Table("bi_emple").Select("*").Scan(&colaborador)
+// 	return c.JSON(http.StatusOK, colaborador)
+// }
+
 func GetAllColab(c echo.Context) error {
 	collaborators, err := services.GetAllColab()
 	if err != nil {
