@@ -5,9 +5,9 @@ import (
 	"github.com/DevEdwinF/smartback.git/internal/config"
 )
 
-func GetAllColab() ([]models.NmContr, error) {
-	collaborators := []models.NmContr{}
-	err := config.KDB.Raw(`
+func GetAllColab() ([]models.Collaborators, error) {
+	collaborators := []models.Collaborators{}
+	err := config.DB.Raw(`
 	        SELECT
 	            bi_emple.cod_inte AS NúmeroIdentificación,
 	            bi_emple.nom_empl AS Nombres,
