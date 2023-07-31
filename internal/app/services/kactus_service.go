@@ -5,8 +5,8 @@ import (
 	"github.com/DevEdwinF/smartback.git/internal/config"
 )
 
-func GetAllColab() ([]models.Collaborators, error) {
-	collaborators := []models.Collaborators{}
+func GetAllColab() ([]models.NmContr, error) {
+	collaborators := []models.NmContr{}
 	err := config.KDB.Table("NM_CONTR").
 		Select("bi_emple.cod_inte AS NúmeroIdentificación, bi_emple.nom_empl AS Nombres, bi_emple.ape_empl AS Apellidos, BI_CARGO.nom_carg AS Cargo, NM_CONTR.fec_ingr AS FechaIngreso, bi_emple.box_mail AS CorreoCorporativo, bi_emple.eee_mail AS CorreoPersonal, NomJefe.nom_empl AS NombresJefeInme, NomJefe.ape_empl AS ApellidosJefeInme").
 		Joins("INNER JOIN bi_emple ON NM_CONTR.cod_empl = bi_emple.cod_empl").
