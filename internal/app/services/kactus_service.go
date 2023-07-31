@@ -7,7 +7,11 @@ import (
 
 func GetAllColab() ([]models.Collaborators, error) {
 	collaborators := []models.Collaborators{}
-	err := config.KDB.Table("nm_contra").Select("*").Scan(&collaborators).Error
+	err := config.KDB.Table("nm_contr").Select("*").Scan(&collaborators).Error
+	if err != nil {
+		return nil, err
+	}
+
 	return collaborators, err
 }
 
