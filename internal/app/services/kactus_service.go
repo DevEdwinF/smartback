@@ -7,7 +7,7 @@ import (
 
 func GetAllColab() ([]models.Collaborators, error) {
 	collaborators := []models.Collaborators{}
-	err := config.DB.Raw(`
+	err := config.KDB.Raw(`
 	        SELECT
 	            bi_emple.cod_inte AS NúmeroIdentificación,
 	            bi_emple.nom_empl AS Nombres,
