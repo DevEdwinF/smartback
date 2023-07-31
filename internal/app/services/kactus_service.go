@@ -7,7 +7,7 @@ import (
 
 func GetAllColab() ([]models.NmContr, error) {
 	collaborators := []models.NmContr{}
-	err := config.DB.Raw(`
+	err := config.KDB.Raw(`
         SELECT
            *
         FROM
