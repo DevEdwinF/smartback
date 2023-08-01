@@ -6,9 +6,9 @@ package models
 
 type NmContr struct {
 	FName    string
-	LName    string `gorm:"column:l_name"`
-	Position any
-	Date     any
+	LName    string
+	Position any `gorm:"column:position"`
+	Date     any `gorm:"column:date"`
 	BMail    string
 	EMail    string
 	FnLeader string
