@@ -4,6 +4,7 @@ import (
 	attendance "github.com/DevEdwinF/smartback.git/internal/infrastructure/api/router/attendance"
 	"github.com/DevEdwinF/smartback.git/internal/infrastructure/api/router/auth"
 	collaborator "github.com/DevEdwinF/smartback.git/internal/infrastructure/api/router/collaborator"
+	"github.com/DevEdwinF/smartback.git/internal/infrastructure/api/router/kactus"
 	"github.com/DevEdwinF/smartback.git/internal/infrastructure/api/router/schedule"
 	"github.com/DevEdwinF/smartback.git/internal/infrastructure/api/router/stats"
 	"github.com/labstack/echo/v4"
@@ -25,5 +26,6 @@ func GlobalRouter(e *echo.Echo) {
 	collaborator.CollaboratorRoutes(e)
 	schedule.ScheduleRouter(e)
 	stats.StatsRoutes(e)
+	kactus.KactusRouter(e)
 
 }
