@@ -5,6 +5,6 @@ package models
 // }
 
 type NmContr struct {
-	NomEmpl string `gorm:"column:nom_empl"`
-	ApeEmpl string `gorm:"column:ape_empl"`
+	NomEmpl string `gorm:"column:f_name"`
+	ApeEmpl string `gorm:"column:l_name"`
 }
