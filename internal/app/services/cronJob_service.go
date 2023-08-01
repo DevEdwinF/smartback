@@ -49,6 +49,8 @@ func SyncData() error {
 	return nil
 }
 
+//testing
+
 func syncCollaborators(sourceCollaborators []models.NmContr, destinationCollaborators []entity.Collaborators) error {
 	// Recorre los colaboradores de la base de datos fuente
 	for _, sourceCollaborator := range sourceCollaborators {
