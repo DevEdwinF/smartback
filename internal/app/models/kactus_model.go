@@ -5,11 +5,11 @@ package models
 // }
 
 type NmContr struct {
-	Document any `gorm:"column:document"`
+	Document int `gorm:"column:document"`
 	FName    string
 	LName    string
-	Position any `gorm:"column:position"`
-	Date     any `gorm:"column:date"`
+	Position string `gorm:"column:position"`
+	Date     any    `gorm:"column:date"`
 	BMail    string
 	EMail    string
 	FnLeader string
