@@ -21,3 +21,13 @@ func GetAllColab(c echo.Context) error {
 	}
 	return c.JSON(http.StatusOK, collaborators)
 }
+
+func GetColab(c echo.Context) error {
+	document := c.Param("document")
+
+	collaborator, err := services.GetColabById(document)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, err)
+	}
+	return c.JSON(http.StatusOK, collaborator)
+}
