@@ -5,7 +5,7 @@ package models
 // }
 
 type NmContr struct {
-	Document int
+	Document int `gorm:"column:document"`
 	FName    string
 	LName    string
 	Position any `gorm:"column:position"`
