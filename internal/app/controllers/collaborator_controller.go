@@ -12,7 +12,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func GetAllCollaboratorsHandler(c echo.Context) error {
+func GetAllCollaboratorsController(c echo.Context) error {
 	collaborators, err := services.GetAllCollaborators()
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "No se encuentra el colaborador"})
