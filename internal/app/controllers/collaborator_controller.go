@@ -5,17 +5,20 @@ import (
 	"net/http"
 
 	"github.com/DevEdwinF/smartback.git/internal/app/models"
+	"github.com/DevEdwinF/smartback.git/internal/app/services"
 	"github.com/DevEdwinF/smartback.git/internal/config"
 	"github.com/DevEdwinF/smartback.git/internal/infrastructure/entity"
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
 )
 
-func GetAllCollaborators(c echo.Context) error {
-	collaboratorWithSchedule := []entity.CollaboratorsEntity{}
+func GetAllCollaboratorsHandler(c echo.Context) error {
+	collaborators, err := services.GetAllCollaborators()
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "No se encuentra el colaborador"})
+	}
 
-	config.DB.Table("collaborators").Select("*").Scan(&collaboratorWithSchedule)
-	return c.JSON(http.StatusOK, collaboratorWithSchedule)
+	return c.JSON(http.StatusOK, collaborators)
 }
 
 func GetAllCollaboratorsHorary(c echo.Context) error {
