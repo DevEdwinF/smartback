@@ -5,7 +5,8 @@ package models
 // }
 
 type NmContr struct {
-	NomEmpl  string `gorm:"column:f_name"`
+	FName    string
 	ApeEmpl  string `gorm:"column:l_name"`
 	Position any    `gorm:"column:position"`
+	Date     any    ``
 }
