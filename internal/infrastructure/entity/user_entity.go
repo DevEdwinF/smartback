@@ -8,7 +8,7 @@ type User struct {
 	Password string `json:"password"`
 }
 
-type CollaboratorsEntity struct {
+type Collaborators struct {
 	Document int       `json:"document"`
 	FName    string    `json:"f_name"`
 	LName    string    `json:"l_name"`
@@ -19,6 +19,6 @@ type CollaboratorsEntity struct {
 }
 
 type CollaboratorsDataEntity struct {
-	CollaboratorsEntity
+	Collaborators
 	Schedule
 }

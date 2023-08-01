@@ -49,7 +49,7 @@ func SyncData() error {
 	return nil
 }
 
-func syncCollaborators(sourceCollaborators []models.NmContr, destinationCollaborators []entity.CollaboratorsEntity) error {
+func syncCollaborators(sourceCollaborators []models.NmContr, destinationCollaborators []entity.Collaborators) error {
 	// Recorre los colaboradores de la base de datos fuente
 	for _, sourceCollaborator := range sourceCollaborators {
 		found := false
@@ -72,7 +72,7 @@ func syncCollaborators(sourceCollaborators []models.NmContr, destinationCollabor
 				return err // Manejar el error si el valor no es un número válido
 			}
 
-			newCollaborator := entity.CollaboratorsEntity{
+			newCollaborator := entity.Collaborators{
 				Document: documentInt,
 				FName:    sourceCollaborator.FName,
 				LName:    sourceCollaborator.LName,
@@ -91,7 +91,7 @@ func syncCollaborators(sourceCollaborators []models.NmContr, destinationCollabor
 	return nil
 }
 
-func AddCollaboratorToDestinationDB(collaborator entity.CollaboratorsEntity) error {
+func AddCollaboratorToDestinationDB(collaborator entity.Collaborators) error {
 	err := config.DB.Create(&collaborator).Error
 	if err != nil {
 		return err
