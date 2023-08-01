@@ -1,7 +1,8 @@
 
 create table collaborators(
     document int primary key,			
-	name varchar(50) not null,
+	f_name varchar(50) not null,
+	l_name varchar(50) not null,
 	email varchar(50) not null,
 	position varchar(45) not null,
 	leader varchar(50) not null,
@@ -55,8 +56,9 @@ REFERENCES collaborators(document);
 
 create table Users (
 	id serial primary key,
-	name varchar(45) not null,
-	email varchar(45) not null,
+	f_name varchar(50) not null,
+	l_name varchar(50) not null,
+	email varchar(50) not null,
 	password varchar(12) not null,
 	create_at timestamp
 )

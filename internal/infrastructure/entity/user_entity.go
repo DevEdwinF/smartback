@@ -10,7 +10,8 @@ type User struct {
 
 type CollaboratorsEntity struct {
 	Document int       `json:"document"`
-	Name     string    `json:"name"`
+	FName    string    `json:"f_name"`
+	LName    string    `json:"l_name"`
 	Email    string    `json:"email"`
 	Position string    `json:"position"`
 	Leader   string    `json:"leader"`

@@ -35,7 +35,8 @@ func GenerateToken(user *models.User) (string, error) {
 
 	claims := token.Claims.(jwt.MapClaims)
 	claims["email"] = user.Email
-	claims["name"] = user.Name
+	claims["fName"] = user.FName
+	claims["lName"] = user.LName
 	claims["role"] = user.FkRoleId
 	claims["roleName"] = user.RoleName
 	claims["exp"] = time.Now().Add(time.Hour * 72).Unix()

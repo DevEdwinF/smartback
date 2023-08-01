@@ -24,7 +24,7 @@ func SaveRegisterAttendance(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	var schedule models.Schedule
+	var schedule models.Schedules
 	err = config.DB.Model(&schedule).Where("fk_collaborators_document = ? AND day = ?", attendance.FkDocumentId, time.Now().Format("Monday")).First(&schedule).Error
 
 	if err != nil {
@@ -114,7 +114,7 @@ func GetAllAttendance(c echo.Context) error {
 
 	attendance := []entity.UserAttendanceData{}
 
-	config.DB.Table("attendances a").Select("c.name,c.email, a.* ").Joins("INNER JOIN collaborators c on c.document = a.fk_document_id").Find(&attendance)
+	config.DB.Table("attendances a").Select("c.f_name, c.l_name,c.email, a.* ").Joins("INNER JOIN collaborators c on c.document = a.fk_document_id").Find(&attendance)
 
 	return c.JSON(http.StatusOK, attendance)
 }

@@ -5,7 +5,8 @@ import "time"
 type Collaborators struct {
 	// ID       int
 	Document int
-	Name     string
+	FName    string
+	LName    string
 	Email    string
 	Position string
 	CreateAt time.Time
@@ -13,7 +14,7 @@ type Collaborators struct {
 
 type CollaboratorsData struct {
 	Collaborators
-	Schedule
+	Schedules
 }
 
 // type Employe struct {

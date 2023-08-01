@@ -51,7 +51,7 @@ func AssignSchedulesToCollaborator(c echo.Context) error {
 func DeleteSchedule(c echo.Context) error {
 	id := c.Param("id")
 
-	var schedule models.Schedule
+	var schedule models.Schedules
 	if err := config.DB.First(&schedule, id).Error; err != nil {
 		if gorm.IsRecordNotFoundError(err) {
 			return echo.NewHTTPError(http.StatusNotFound, "Schedule not found")

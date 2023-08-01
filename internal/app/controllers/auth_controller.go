@@ -39,7 +39,8 @@ func GetUserInfo(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"email":    claims["email"],
-		"name":     claims["name"],
+		"fName":    claims["fName"],
+		"lName":    claims["lName"],
 		"role":     claims["role"],
 		"roleName": claims["roleName"],
 	})
