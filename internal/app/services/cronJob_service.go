@@ -66,7 +66,7 @@ func syncCollaborators(sourceCollaborators []models.NmContr, destinationCollabor
 			// El colaborador no existe en la base de datos de destino, agrega el nuevo colaborador
 			newCollaborator := entity.CollaboratorsEntity{
 				// ID:       sourceCollaborator.ID,
-				Document: sourceCollaborator.Document,
+				// Document: sourceCollaborator.Document,
 				FName:    sourceCollaborator.FName,
 				LName:    sourceCollaborator.LName,
 				Position: sourceCollaborator.Position,
