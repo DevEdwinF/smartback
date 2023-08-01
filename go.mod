@@ -12,6 +12,7 @@ require (
 	github.com/gliderlabs/ssh v0.3.5 // indirect
 	github.com/kr/fs v0.1.0 // indirect
 	github.com/pkg/sftp v1.13.5 // indirect
+	github.com/robfig/cron v1.2.0 // indirect
 )
 
 require (
