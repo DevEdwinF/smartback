@@ -64,9 +64,6 @@ func syncCollaborators(sourceCollaborators []models.NmContr, destinationCollabor
 		}
 
 		if !found {
-			// El colaborador no existe en la base de datos de destino, agrega el nuevo colaborador
-
-			// Convertir el campo 'Document' de string a int
 
 			newCollaborator := entity.Collaborators{
 				Document:  sourceCollaborator.Document,
