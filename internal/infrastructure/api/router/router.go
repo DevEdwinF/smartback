@@ -16,6 +16,7 @@ func GlobalRouter(e *echo.Echo) {
 		AllowOrigins: []string{"*"},
 		AllowMethods: []string{"*"},
 		AllowHeaders: []string{"*"},
+		//toreto
 	}))
 	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
 		Format: "method=${method}, uri=${uri}, status=${status}\n",
