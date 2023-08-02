@@ -10,6 +10,7 @@ type NmContr struct {
 	LName    string
 	Position string `gorm:"column:position"`
 	Date     any    `gorm:"column:date"`
+	State    string
 	BMail    string
 	EMail    string
 	FnLeader string

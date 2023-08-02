@@ -171,7 +171,6 @@ func SaveTranslated(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusNotFound, "Colaborador no encontrado")
 	}
 
-	// Crear un nuevo translatedcollaborator relacionado con el colaborador encontrado
 	newTranslatedCollaborator := models.Translatedcollaborators{
 		FkCollaboratorId: collaborator.Id,
 		CreatedAt:        time.Now(),

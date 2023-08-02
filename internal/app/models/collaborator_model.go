@@ -8,6 +8,8 @@ type Collaborators struct {
 	FName    string
 	LName    string
 	Email    string
+	Bmail    string
+	State    string
 	Position string
 	CreateAt time.Time
 }
