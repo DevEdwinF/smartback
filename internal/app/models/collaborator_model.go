@@ -3,15 +3,15 @@ package models
 import "time"
 
 type Collaborators struct {
-	Id       int
-	Document string
-	FName    string
-	LName    string
-	Email    string
-	Bmail    string
-	State    string
-	Position string
-	CreateAt time.Time
+	Id        int
+	Document  string
+	FName     string
+	LName     string
+	Email     string
+	Bmail     string
+	State     string
+	Position  string
+	CreatedAt time.Time
 }
 
 type CollaboratorsData struct {
