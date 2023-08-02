@@ -69,15 +69,15 @@ func syncCollaborators(sourceCollaborators []models.NmContr, destinationCollabor
 			// Convertir el campo 'Document' de string a int
 
 			newCollaborator := entity.Collaborators{
-				Document: sourceCollaborator.Document,
-				FName:    sourceCollaborator.FName,
-				LName:    sourceCollaborator.LName,
-				Position: sourceCollaborator.Position,
-				Email:    sourceCollaborator.EMail,
-				Bmail:    sourceCollaborator.BMail,
-				State:    sourceCollaborator.State,
-				Leader:   sourceCollaborator.FnLeader + " " + sourceCollaborator.LnLeader,
-				CreateAt: time.Now(),
+				Document:  sourceCollaborator.Document,
+				FName:     sourceCollaborator.FName,
+				LName:     sourceCollaborator.LName,
+				Position:  sourceCollaborator.Position,
+				Email:     sourceCollaborator.EMail,
+				Bmail:     sourceCollaborator.BMail,
+				State:     sourceCollaborator.State,
+				Leader:    sourceCollaborator.FnLeader + " " + sourceCollaborator.LnLeader,
+				CreatedAt: time.Now(),
 			}
 
 			err := AddCollaboratorToDestinationDB(newCollaborator)
