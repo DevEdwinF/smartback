@@ -47,8 +47,8 @@ VALUES ('Monday', '07:00:00', '17:00:00');
 
 create table TranslatedCollaborators (
 	id serial primary key,
-	create_at timestamp
-)
+	created_at timestamp
+);
 
 ALTER TABLE TranslatedCollaborators
 add column fk_collaborator_id integer,

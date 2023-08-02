@@ -40,6 +40,7 @@ type ValidateSchedule struct {
 }
 
 type Translatedcollaborators struct {
-	FkDocumentId int       `json:"document"`
-	CreatedAt    time.Time `json:"date"`
+	FkCollaboratorId int       `json:"id"`
+	Document         string    `json:"document"`
+	CreatedAt        time.Time `json:"date"`
 }

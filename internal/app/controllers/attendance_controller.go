@@ -143,28 +143,6 @@ func ValidateSchedule(c echo.Context) error {
 	return c.JSON(http.StatusOK, arrival)
 }
 
-// func SaveTranslated(c echo.Context) error {
-// 	var translatedEntity entity.Translatedcollaborators
-// 	if err := c.Bind(&translatedEntity); err != nil {
-// 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
-// 	}
-
-// 	_, err := ValidateCollaborator(translatedEntity.FkDocumentId)
-// 	if err != nil {
-// 		return echo.NewHTTPError(http.StatusNotFound, err.Error())
-// 	}
-
-// 	translatedEntity.CreatedAt = time.Now()
-
-// 	if err := config.DB.Create(&translatedEntity).Error; err != nil {
-// 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
-// 	}
-
-// 	return c.JSON(http.StatusOK, map[string]string{
-// 		"message": "Registro de traducción creado exitosamente",
-// 	})
-// }
-
 func ValidateCollaboratorController(c echo.Context) error {
 	document := c.Param("doc")
 
@@ -174,4 +152,37 @@ func ValidateCollaboratorController(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, collaborator)
+}
+
+func SaveTranslated(c echo.Context) error {
+	var translatedEntity entity.Translatedcollaborators
+	err := c.Bind(&translatedEntity)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+
+	// Buscar el colaborador por el documento
+	var collaborator models.Collaborators
+	err = config.DB.Model(&collaborator).Where("document = ?", translatedEntity.Document).First(&collaborator).Error
+	if err != nil {
+		if !errors.Is(err, gorm.ErrRecordNotFound) {
+			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+		}
+		return echo.NewHTTPError(http.StatusNotFound, "Colaborador no encontrado")
+	}
+
+	// Crear un nuevo translatedcollaborator relacionado con el colaborador encontrado
+	newTranslatedCollaborator := models.Translatedcollaborators{
+		FkCollaboratorId: collaborator.Id,
+		CreatedAt:        time.Now(),
+	}
+
+	err = config.DB.Create(&newTranslatedCollaborator).Error
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+
+	return c.JSON(http.StatusOK, map[string]string{
+		"message": "Translado registrado con éxito",
+	})
 }

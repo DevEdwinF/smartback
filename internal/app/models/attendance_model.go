@@ -15,10 +15,11 @@ type Attendance struct {
 	Photo            string
 	CreatedAt        time.Time
 }
-type translatedcollaborators struct {
-	ID           int
-	FkDocumentId int
-	CreatedAt    time.Time
+type Translatedcollaborators struct {
+	Id               int
+	FkCollaboratorId int
+	// Document         string
+	CreatedAt time.Time
 }
 
 // func (Translated) TableName() string {
