@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"errors"
 	"net/http"
 
 	"github.com/DevEdwinF/smartback.git/internal/app/models"
@@ -22,23 +21,30 @@ func GetAllCollaboratorsSchedule(c echo.Context) error {
 }
 
 func AssignSchedulesToCollaborator(c echo.Context) error {
-	var schedules []entity.Schedule
+	var schedules []entity.Schedules // Actualizar a la estructura correcta de Schedule
 
 	if err := c.Bind(&schedules); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "Formato de datos inválido")
 	}
 
 	var collaborator entity.CollaboratorsDataEntity
-	if err := config.DB.Table("collaborators").Take(&collaborator, "document = ?", schedules[0].FkCollaboratorsDocument).Error; err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
+	err := config.DB.Table("collaborators").Select("*").
+		Joins("left join schedules on collaborators.id = schedules.fk_collaborator_id").
+		Where(`"collaborators".id = ?`, schedules[0].FkCollaboratorId).
+		Order(`"collaborators".id`).
+		Limit(1).
+		Find(&collaborator).Error
+
+	if err != nil {
+		if gorm.IsRecordNotFoundError(err) {
 			return echo.NewHTTPError(http.StatusNotFound, "No se encuentra el colaborador")
 		}
 		return echo.NewHTTPError(http.StatusInternalServerError, "Error en el servidor")
 	}
 
 	for _, schedule := range schedules {
-		var existingSchedule entity.Schedule
-		result := config.DB.Table("schedule").Where("id = ?", schedule.Id).Assign(schedule).FirstOrCreate(&existingSchedule)
+		var existingSchedule entity.Schedules
+		result := config.DB.Table("schedules").Where("id = ?", schedule.Id).Assign(schedule).FirstOrCreate(&existingSchedule)
 
 		if result.Error != nil {
 			return echo.NewHTTPError(http.StatusInternalServerError, "Error al asignar el horario")

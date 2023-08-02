@@ -4,12 +4,12 @@ import (
 	"database/sql"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"time"
 
 	"github.com/DevEdwinF/smartback.git/internal/app/models"
+	"github.com/DevEdwinF/smartback.git/internal/app/services"
 	"github.com/DevEdwinF/smartback.git/internal/config"
 	"github.com/DevEdwinF/smartback.git/internal/infrastructure/entity"
 	"github.com/labstack/echo/v4"
@@ -19,20 +19,29 @@ import (
 func SaveRegisterAttendance(c echo.Context) error {
 	var attendance entity.AttendanceEntity
 	err := c.Bind(&attendance)
-
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	var schedule models.Schedules
-	err = config.DB.Model(&schedule).Where("fk_collaborators_document = ? AND day = ?", attendance.FkDocumentId, time.Now().Format("Monday")).First(&schedule).Error
-
+	var collaborator models.Collaborators
+	err = config.DB.Model(&collaborator).Where("document = ?", attendance.Document).First(&collaborator).Error
 	if err != nil {
 		if !errors.Is(err, gorm.ErrRecordNotFound) {
 			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 		}
+		return echo.NewHTTPError(http.StatusNotFound, "Colaborador no encontrado")
 	}
+
 	timeNow := time.Now()
+
+	var schedule models.Schedules
+	err = config.DB.Model(&schedule).Where("fk_collaborator_id = ? AND day = ?", collaborator.Id, timeNow.Format("Monday")).First(&schedule).Error
+	if err != nil {
+		if !errors.Is(err, gorm.ErrRecordNotFound) {
+			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+		}
+		return echo.NewHTTPError(http.StatusNotFound, "Horario no encontrado para el colaborador en este día")
+	}
 
 	var arrivalScheduled time.Time
 	if schedule.ArrivalTime != "" {
@@ -45,17 +54,13 @@ func SaveRegisterAttendance(c echo.Context) error {
 
 	late := false
 
-	fmt.Println("Horario asignado", arrivalScheduled)
-	fmt.Println("tiempo actual", timeNow)
-
 	if !arrivalScheduled.IsZero() && timeNow.After(arrivalScheduled.Add(5*time.Minute)) {
-		fmt.Println("entra?")
 		late = true
 	}
 
 	var validateAttendance models.Attendance
 	err = config.DB.Model(&validateAttendance).
-		Where("fk_document_id = ? AND DATE(created_at) = ?", attendance.FkDocumentId, timeNow.Format("2006-01-02")).
+		Where("fk_collaborator_id = ? AND date(created_at) = ?", collaborator.Id, timeNow.Format("2006-01-02")).
 		First(&validateAttendance).Error
 
 	if err != nil {
@@ -63,6 +68,7 @@ func SaveRegisterAttendance(c echo.Context) error {
 			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 		}
 	}
+
 	switch attendance.State {
 	case "arrival":
 		if validateAttendance.ID != 0 || validateAttendance.Arrival.Valid {
@@ -70,14 +76,13 @@ func SaveRegisterAttendance(c echo.Context) error {
 		}
 
 		modelsAttendance := models.Attendance{
-			FkDocumentId: attendance.FkDocumentId,
-			Photo:        attendance.Photo,
-			Location:     attendance.Location,
-			Arrival:      sql.NullString{String: timeNow.Format("15:04:05"), Valid: true},
-			Late:         late,
-			CreatedAt:    timeNow,
+			FkCollaboratorID: collaborator.Id,
+			Photo:            attendance.Photo,
+			Location:         attendance.Location,
+			Arrival:          sql.NullString{String: timeNow.Format("15:04:05"), Valid: true},
+			Late:             late,
+			CreatedAt:        timeNow,
 		}
-
 		err = config.DB.Create(&modelsAttendance).Error
 		if err != nil {
 			return echo.NewHTTPError(http.StatusBadRequest, err.Error())
@@ -111,10 +116,9 @@ func SaveRegisterAttendance(c echo.Context) error {
 }
 
 func GetAllAttendance(c echo.Context) error {
-
 	attendance := []entity.UserAttendanceData{}
 
-	config.DB.Table("attendances a").Select("c.f_name, c.l_name,c.email, a.* ").Joins("INNER JOIN collaborators c on c.document = a.fk_document_id").Find(&attendance)
+	config.DB.Table("attendances a").Select("c.f_name, c.l_name, c.email, c.document, a.* ").Joins("INNER JOIN collaborators c on c.id = a.fk_collaborator_id").Find(&attendance)
 
 	return c.JSON(http.StatusOK, attendance)
 }
@@ -139,48 +143,35 @@ func ValidateSchedule(c echo.Context) error {
 	return c.JSON(http.StatusOK, arrival)
 }
 
-func SaveTranslated(c echo.Context) error {
-	var translatedEntity entity.Translatedcollaborators
-	if err := c.Bind(&translatedEntity); err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
-	}
+// func SaveTranslated(c echo.Context) error {
+// 	var translatedEntity entity.Translatedcollaborators
+// 	if err := c.Bind(&translatedEntity); err != nil {
+// 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+// 	}
 
-	_, err := ValidateCollaborator(translatedEntity.FkDocumentId)
+// 	_, err := ValidateCollaborator(translatedEntity.FkDocumentId)
+// 	if err != nil {
+// 		return echo.NewHTTPError(http.StatusNotFound, err.Error())
+// 	}
+
+// 	translatedEntity.CreatedAt = time.Now()
+
+// 	if err := config.DB.Create(&translatedEntity).Error; err != nil {
+// 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+// 	}
+
+// 	return c.JSON(http.StatusOK, map[string]string{
+// 		"message": "Registro de traducción creado exitosamente",
+// 	})
+// }
+
+func ValidateCollaboratorController(c echo.Context) error {
+	document := c.Param("doc")
+
+	collaborator, err := services.ValidateCollaboratorService(document)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusNotFound, err.Error())
 	}
 
-	translatedEntity.CreatedAt = time.Now()
-
-	if err := config.DB.Create(&translatedEntity).Error; err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
-	}
-
-	return c.JSON(http.StatusOK, map[string]string{
-		"message": "Registro de traducción creado exitosamente",
-	})
-}
-
-func ValidateColaborator(c echo.Context) error {
-	id := c.Param("doc")
-
-	var employe models.Collaborators
-	if err := config.DB.Table("collaborators").Where("document = ?", id).Scan(&employe).Error; err != nil {
-		return echo.NewHTTPError(http.StatusNotFound, err.Error())
-	}
-	if employe.Document == 0 {
-		return echo.NewHTTPError(http.StatusNotFound, "Empleado no se encuentra registrado")
-	}
-	return c.JSON(http.StatusOK, employe)
-}
-
-func ValidateCollaborator(document int) (*models.Collaborators, error) {
-	var collaborator models.Collaborators
-	if err := config.DB.Table("collaborators").Where("document = ?", document).Scan(&collaborator).Error; err != nil {
-		return nil, err
-	}
-	if collaborator.Document == 0 {
-		return nil, echo.NewHTTPError(http.StatusNotFound, "Empleado no se encuentra registrado")
-	}
-	return &collaborator, nil
+	return c.JSON(http.StatusOK, collaborator)
 }

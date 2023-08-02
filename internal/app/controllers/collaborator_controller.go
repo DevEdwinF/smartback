@@ -37,7 +37,7 @@ func GetCollaborator(c echo.Context) error {
 	collaboratorWithSchedule := []entity.CollaboratorsDataEntity{}
 
 	err := config.DB.Table("collaborators").Select("*").
-		Joins("left join schedule on collaborators.document = schedule.fk_collaborators_document").
+		Joins("left join schedules on collaborators.id = schedules.fk_collaborator_id").
 		Where(`"collaborators".document = ?`, document).
 		Order(`"collaborators".document`).
 		// Limit(1).
@@ -106,7 +106,7 @@ func DeleteCollaborator(c echo.Context) error {
 
 	config.DB.Find(&employee, id)
 
-	if employee.Document > 0 {
+	if employee.Document != "" {
 		config.DB.Delete(employee)
 		return c.JSON(http.StatusOK, employee)
 	} else {

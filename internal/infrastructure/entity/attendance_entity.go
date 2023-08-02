@@ -10,24 +10,28 @@ import "time"
 // }
 
 type AttendanceEntity struct {
-	FkDocumentId int       `json:"document"`
-	State        string    `json:"state"`
-	Location     string    `josn:"location"`
-	Late         *bool     `json:"late"`
-	Photo        string    `json:"photo"`
-	CreatedAt    time.Time `json:"date"`
+	ID               int64     `json:"id"`
+	FkCollaboratorId int       `json:"fk_collaborator_id"`
+	Document         string    `json:"document"`
+	State            string    `json:"state"`
+	Location         string    `josn:"location"`
+	Late             *bool     `json:"late"`
+	Photo            string    `json:"photo"`
+	CreatedAt        time.Time `json:"date"`
 }
 
 type UserAttendanceData struct {
-	FkDocumentId int       `json:"document"`
-	Name         string    `json:"name"`
-	Email        string    `json:"email"`
-	Location     string    `gorm:"location"`
-	Arrival      string    `json:"arrival"`
-	Departure    string    `json:"departure"`
-	Late         *bool     `json:"late"`
-	Photo        string    `json:"photo"`
-	CreatedAt    time.Time `json:"date"`
+	// FkDocumentId int       `json:"document"`
+	FkCollaboratorId int       `json:"fk_collaborator_id"`
+	Document         string    `json:"document"`
+	Name             string    `json:"name"`
+	Email            string    `json:"email"`
+	Location         string    `gorm:"location"`
+	Arrival          string    `json:"arrival"`
+	Departure        string    `json:"departure"`
+	Late             *bool     `json:"late"`
+	Photo            string    `json:"photo"`
+	CreatedAt        time.Time `json:"date"`
 }
 
 type ValidateSchedule struct {

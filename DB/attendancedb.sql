@@ -1,12 +1,13 @@
 
 create table collaborators(
-    document int primary key,			
+	id serial primary key,
+    document VARCHAR(25) UNIQUE,			
 	f_name varchar(50) not null,
 	l_name varchar(50) not null,
 	email varchar(50) not null,
 	position varchar(45) not null,
 	leader varchar(50) not null,
-	create_at timestamp
+	created_at timestamp
 );
 
 create table attendances(
@@ -14,33 +15,34 @@ create table attendances(
 	arrival timestamp,
 	departure timestamp,
 	location varchar(10),
+	late BOOLEAN,
 	photo bytea,
     created_at timestamp
 )
 
 ALTER TABLE attendances
-ADD COLUMN fk_document_id int,
-ADD CONSTRAINT fk_document_id
-FOREIGN KEY (fk_document_id)
-REFERENCES collaborators (document);
+ADD COLUMN fk_collaborator_id int,
+ADD CONSTRAINT fk_collaborator_id
+FOREIGN KEY (fk_collaborator_id)
+REFERENCES collaborators (id);
 
-INSERT INTO "collaborators" ("document", "name", "email", "position", "leader")
-VALUES (1032500648, 'Edwin Fernando Pirajan Arevalo', 'epiraja@smart.edu.co', 'Desarrollador de software', 'Jorge Celemin');
+INSERT INTO "collaborators" ("id","document", "f_name", "l_name", "email", "position", "leader")
+VALUES (1 ,'1032500648', 'Edwin Fernando', 'Pirajan Arevalo', 'epiraja@smart.edu.co', 'Desarrollador de software', 'Jorge Celemin');
 
-create table schedule(
+create table schedules(
 	id serial primary key,
 	day varchar(11),
-	arrival_time TIMESTAMP,
-	departure_time TIMESTAMP
+	arrival_time VARCHAR(10),
+	departure_time VARCHAR(10)
 )
 
-ALTER TABLE schedule
-add column fk_collaborators_document integer,
-ADD CONSTRAINT fk_collaborators_document
-FOREIGN KEY (fk_collaborators_document)
-REFERENCES collaborators(document);
+ALTER TABLE schedules
+add column fk_collaborator_id integer,
+ADD CONSTRAINT fk_collaborator_id
+FOREIGN KEY (fk_collaborator_id)
+REFERENCES collaborators(id);
 
-INSERT INTO "schedule" ("day", "arrival_time", "departure_time")
+INSERT INTO "schedules" ("day", "arrival_time", "departure_time")
 VALUES ('Monday', '07:00:00', '17:00:00');
 
 create table TranslatedCollaborators (
@@ -49,10 +51,10 @@ create table TranslatedCollaborators (
 )
 
 ALTER TABLE TranslatedCollaborators
-add column fk_collaborators_document integer,
-ADD CONSTRAINT fk_collaborators_document
-FOREIGN KEY (fk_collaborators_document)
-REFERENCES collaborators(document);
+add column fk_collaborator_id integer,
+ADD CONSTRAINT fk_collaborator_id
+FOREIGN KEY (fk_collaborator_id)
+REFERENCES collaborators(id);
 
 create table Users (
 	id serial primary key,
@@ -71,7 +73,8 @@ create table roles (
 ALTER TABLE users
 ADD COLUMN fk_role_id INTEGER REFERENCES roles(id) ON DELETE CASCADE;
 
-INSERT INTO "users" ("name", "email", "fk_role_id", "password")
-VALUES ('Edwin Fernando Pirajan Arevalo', 'epirajan@smart.edu.co', 1, "123456");
+INSERT INTO "users" ("f_name", "l_name", "email", "fk_role_id", "password")
+VALUES ('Edwin Fernando','Pirajan Arevalo', 'epirajan@smart.edu.co', 1, '123456');
+
 
 SELECT * FROM "attendances" WHERE fk_document_id = 123 AND DATE(created_at) = CURRENT_DATE ORDER BY "attendances"."id" LIMIT 1

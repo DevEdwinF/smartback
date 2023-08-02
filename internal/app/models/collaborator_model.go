@@ -3,8 +3,8 @@ package models
 import "time"
 
 type Collaborators struct {
-	// ID       int
-	Document int
+	Id       int
+	Document string
 	FName    string
 	LName    string
 	Email    string

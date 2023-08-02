@@ -6,14 +6,14 @@ import (
 )
 
 type Attendance struct {
-	ID           int
-	FkDocumentId int
-	Location     string
-	Arrival      sql.NullString
-	Departure    sql.NullString
-	Late         bool
-	Photo        string
-	CreatedAt    time.Time
+	ID               int
+	FkCollaboratorID int
+	Location         string
+	Arrival          sql.NullString
+	Departure        sql.NullString
+	Late             bool
+	Photo            string
+	CreatedAt        time.Time
 }
 type translatedcollaborators struct {
 	ID           int

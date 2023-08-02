@@ -43,5 +43,4 @@ func buildDSNKactus() string {
 
 	dsn := "sqlserver://%s:%s@%s:%s?database=%s"
 	return fmt.Sprintf(dsn, user, password, domain, port, database)
-
 }

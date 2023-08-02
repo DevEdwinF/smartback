@@ -2,7 +2,6 @@ package services
 
 import (
 	"log"
-	"strconv"
 	"time"
 
 	"github.com/DevEdwinF/smartback.git/internal/app/models"
@@ -58,7 +57,7 @@ func syncCollaborators(sourceCollaborators []models.NmContr, destinationCollabor
 
 		// Busca el colaborador en la base de datos de destino
 		for _, destinationCollaborator := range destinationCollaborators {
-			if sourceCollaborator.Document == strconv.Itoa(destinationCollaborator.Document) {
+			if sourceCollaborator.Document == destinationCollaborator.Document {
 				// El colaborador ya existe en la base de datos de destino, no es necesario agregarlo
 				found = true
 				break
@@ -69,13 +68,9 @@ func syncCollaborators(sourceCollaborators []models.NmContr, destinationCollabor
 			// El colaborador no existe en la base de datos de destino, agrega el nuevo colaborador
 
 			// Convertir el campo 'Document' de string a int
-			documentInt, err := strconv.Atoi(sourceCollaborator.Document)
-			if err != nil {
-				return err // Manejar el error si el valor no es un número válido
-			}
 
 			newCollaborator := entity.Collaborators{
-				Document: documentInt,
+				Document: sourceCollaborator.Document,
 				FName:    sourceCollaborator.FName,
 				LName:    sourceCollaborator.LName,
 				Position: sourceCollaborator.Position,
@@ -83,7 +78,7 @@ func syncCollaborators(sourceCollaborators []models.NmContr, destinationCollabor
 				CreateAt: time.Now(),
 			}
 
-			err = AddCollaboratorToDestinationDB(newCollaborator) // Use the existing 'err' variable
+			err := AddCollaboratorToDestinationDB(newCollaborator)
 			if err != nil {
 				return err
 			}
