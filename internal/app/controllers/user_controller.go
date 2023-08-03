@@ -48,11 +48,39 @@ func (h *UserController) GetAllUsers(c echo.Context) error {
 	return c.JSON(http.StatusOK, users)
 }
 
-// func GetAllUsersController(c echo.Context) error {
-// 	users, err := services.GetAllUsers()
-// 	if err != nil {
-// 		return echo.NewHTTPError(http.StatusInternalServerError, "failed to get all users")
-// 	}
+func (h *UserController) GetUserById(c echo.Context) error {
+	document := c.Param("doc")
+	user, err := h.userService.GetUserById(document)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, "failed to get user")
+	}
 
-// 	return c.JSON(http.StatusOK, users)
-// }
+	return c.JSON(http.StatusOK, user)
+}
+
+func (h *UserController) UpdateUser(c echo.Context) error {
+	var user entity.UserData
+	if err := c.Bind(&user); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "invalid request")
+	}
+
+	err := h.userService.UpdateUser(user)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, "failed to update user")
+	}
+	return c.JSON(http.StatusOK, map[string]string{
+		"message": "Usuario actualizado exitosamente",
+	})
+
+}
+
+func (h *UserController) DeleteUser(c echo.Context) error {
+	document := c.Param("doc")
+	err := h.userService.DeleteUser(document)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, "failed to delete user")
+	}
+	return c.JSON(http.StatusOK, map[string]string{
+		"message": "Usuario eliminado",
+	})
+}

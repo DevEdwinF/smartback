@@ -14,5 +14,7 @@ func UserRoutes(e *echo.Echo) {
 	group := e.Group("/api/user")
 	group.POST("/create", UserController.CreateUser)
 	group.GET("/all", UserController.GetAllUsers)
-
+	group.GET("/:doc", UserController.GetUserById)
+	group.PATCH("/update", UserController.UpdateUser)
+	group.DELETE("/delete", UserController.DeleteUser)
 }

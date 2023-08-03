@@ -41,15 +41,42 @@ func (s *UserService) GetAllUsers(users *[]models.User) error {
 	return nil
 }
 
-// func GetAllUsers() ([]models.User, error) {
-// 	users := []models.User{}
-// 	err := config.DB.Table("users").Joins("INNER JOIN roles ON users.fk_role_id = roles.id").Find(&users).Error
-// 	if err != nil {
-// 		return nil, err
-// 	}
+/* How create GetUserById */
 
-// 	return users, nil
-// }
+func (s *UserService) GetUserById(document string) (models.User, error) {
+	var user models.User
+	err := config.DB.Table("users").
+		Select("users.*, roles.name as role_name").
+		Joins("INNER JOIN roles ON users.fk_role_id = roles.id").
+		Where("users.document = ?", document).
+		First(&user).Error
+	if err != nil {
+		return user, err
+	}
+	return user, nil
+}
+
+// func (s *UserService) UpdateUser()
+
+/* How create update user */
+
+func (s *UserService) UpdateUser(user entity.UserData) error {
+	err := config.DB.Table("users").Where("document = ?", user.Document).Updates(&user).Error
+	if err != nil {
+		return errors.New("failed to update user")
+	}
+	return nil
+}
+
+/* How created DeleteUser */
+
+func (s *UserService) DeleteUser(document string) error {
+	err := config.DB.Table("users").Where("document = ?", document).Delete(&models.User{}).Error
+	if err != nil {
+		return errors.New("failed to delete user")
+	}
+	return nil
+}
 
 func (s *UserService) ValidateUser(user entity.UserData) error {
 	var existingUser entity.UserData
