@@ -8,6 +8,16 @@ type User struct {
 	Password string `json:"password"`
 }
 
+type UserData struct {
+	User
+	FName     string    `json:"f_name"`
+	LName     string    `json:"l_name"`
+	CreatedAt time.Time `json:"created_at"`
+	FkRoleId  int       `json:"rol"`
+}
+
+type Users []UserData
+
 type Collaborators struct {
 	Document  string    `json:"document"`
 	FName     string    `json:"f_name"`

@@ -12,8 +12,8 @@ create table collaborators(
 
 create table attendances(
 	id serial primary key,
-	arrival timestamp,
-	departure timestamp,
+	arrival time,
+	departure time,
 	location varchar(10),
 	late BOOLEAN,
 	photo bytea,
@@ -58,11 +58,12 @@ REFERENCES collaborators(id);
 
 create table Users (
 	id serial primary key,
+	document VARCHAR(25),
 	f_name varchar(50) not null,
 	l_name varchar(50) not null,
 	email varchar(50) not null,
 	password varchar(12) not null,
-	create_at timestamp
+	created_at timestamp
 )
 
 create table roles (

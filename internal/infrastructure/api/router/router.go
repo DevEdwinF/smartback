@@ -7,6 +7,7 @@ import (
 	"github.com/DevEdwinF/smartback.git/internal/infrastructure/api/router/kactus"
 	"github.com/DevEdwinF/smartback.git/internal/infrastructure/api/router/schedule"
 	"github.com/DevEdwinF/smartback.git/internal/infrastructure/api/router/stats"
+	"github.com/DevEdwinF/smartback.git/internal/infrastructure/api/router/user"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
@@ -28,5 +29,6 @@ func GlobalRouter(e *echo.Echo) {
 	schedule.ScheduleRouter(e)
 	stats.StatsRoutes(e)
 	kactus.KactusRouter(e)
+	user.UserRoutes(e)
 
 }

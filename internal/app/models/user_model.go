@@ -2,6 +2,7 @@ package models
 
 type User struct {
 	ID       int    `json:"id"`
+	Document string `json:"document"`
 	Email    string `json:"email"`
 	FName    string `json:"f_name"`
 	LName    string `json:"l_name"`
