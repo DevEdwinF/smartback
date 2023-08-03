@@ -24,7 +24,8 @@ type UserAttendanceData struct {
 	// FkDocumentId int       `json:"document"`
 	FkCollaboratorId int       `json:"fk_collaborator_id"`
 	Document         string    `json:"document"`
-	Name             string    `json:"name"`
+	FName            string    `json:"f_name"`
+	LName            string    `json:"l_name"`
 	Email            string    `json:"email"`
 	Location         string    `gorm:"location"`
 	Arrival          string    `json:"arrival"`
