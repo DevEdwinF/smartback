@@ -16,5 +16,5 @@ func UserRoutes(e *echo.Echo) {
 	group.GET("/all", UserController.GetAllUsers)
 	group.GET("/:doc", UserController.GetUserById)
 	group.PATCH("/update", UserController.UpdateUser)
-	group.DELETE("/delete", UserController.DeleteUser)
+	group.DELETE("/delete/:doc", UserController.DeleteUser)
 }
