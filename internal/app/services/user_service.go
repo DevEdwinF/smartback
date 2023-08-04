@@ -41,8 +41,6 @@ func (s *UserService) GetAllUsers(users *[]models.User) error {
 	return nil
 }
 
-/* How create GetUserById */
-
 func (s *UserService) GetUserById(document string) (models.User, error) {
 	var user models.User
 	err := config.DB.Table("users").
@@ -56,10 +54,6 @@ func (s *UserService) GetUserById(document string) (models.User, error) {
 	return user, nil
 }
 
-// func (s *UserService) UpdateUser()
-
-/* How create update user */
-
 func (s *UserService) UpdateUser(user entity.UserData) error {
 	err := config.DB.Table("users").Where("document = ?", user.Document).Updates(&user).Error
 	if err != nil {
@@ -67,8 +61,6 @@ func (s *UserService) UpdateUser(user entity.UserData) error {
 	}
 	return nil
 }
-
-/* How created DeleteUser */
 
 func (s *UserService) DeleteUser(document string) error {
 	err := config.DB.Table("users").Where("document = ?", document).Delete(&models.User{}).Error
