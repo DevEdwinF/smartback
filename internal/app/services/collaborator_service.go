@@ -10,6 +10,14 @@ import (
 	"gorm.io/gorm"
 )
 
+type CollaboratorService struct {
+	db *gorm.DB
+}
+
+func NewCollaboratorService(db *gorm.DB) *CollaboratorService {
+	return &CollaboratorService{db: db}
+}
+
 func GetAllCollaborators() ([]entity.Collaborators, error) {
 	collaboratorWithSchedule := []entity.Collaborators{}
 
@@ -31,3 +39,18 @@ func ValidateCollaboratorService(document string) (*models.Collaborators, error)
 	}
 	return &collaborator, nil
 }
+
+// func (s *CollaboratorService) GetByDocument(document string) (*models.Collaborators, error) {
+
+// 	var collaborator models.Collaborators
+// 	err := s.db.First(&collaborator, "document = ?", document).Error
+// 	if err != nil {
+// 		if errors.Is(err, gorm.ErrRecordNotFound) {
+// 			return nil, fmt.Errorf("Colaborador no encontrado")
+// 		}
+// 		return nil, err
+// 	}
+
+// 	return &collaborator, nil
+
+// }
