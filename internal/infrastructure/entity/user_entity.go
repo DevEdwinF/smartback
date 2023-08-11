@@ -19,6 +19,7 @@ type UserData struct {
 type Users []UserData
 
 type Collaborators struct {
+	ID        int       `json:"id_collaborator"`
 	Document  string    `json:"document"`
 	FName     string    `json:"f_name"`
 	LName     string    `json:"l_name"`
