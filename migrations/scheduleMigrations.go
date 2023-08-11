@@ -1,10 +1,10 @@
 package migrations
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/DevEdwinF/smartback.git/internal/config"
-	"github.com/DevEdwinF/smartback.git/internal/infrastructure/entity"
 	"github.com/labstack/echo/v4"
 	"github.com/xuri/excelize/v2"
 )
@@ -40,25 +40,16 @@ func UploadExcelAndAssignSchedules(c echo.Context) error {
 		arrivalTime := row[2]
 		departureTime := row[3]
 
-		var collaborator entity.CollaboratorsDataEntity
-		err := config.DB.Table("collaborators").
-			Select("id").
-			Where("document = ?", document).
-			First(&collaborator).Error
-		if err != nil {
-			continue
-		}
+		query := fmt.Sprintf(`INSERT INTO "schedules" ("day","arrival_time","departure_time","fk_collaborator_id")
+                             SELECT ?, ?, ?, c."id"
+                             FROM "collaborators" c
+                             WHERE c."document" = ?
+                             RETURNING "id"`)
 
-		schedule := entity.Schedules{
-			Document:         document,
-			Day:              day,
-			ArrivalTime:      arrivalTime,
-			DepartureTime:    departureTime,
-			FkCollaboratorId: collaborator.ID,
-		}
-
-		err = config.DB.Table("schedules").Create(&schedule).Error
+		var scheduleID int
+		err := config.DB.Raw(query, day, arrivalTime, departureTime, document).Row().Scan(&scheduleID)
 		if err != nil {
+			// Manejo de error si no se puede insertar el horario
 			continue
 		}
 	}
