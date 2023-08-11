@@ -17,4 +17,6 @@ func main() {
 	router.GlobalRouter(e)
 
 	e.Logger.Fatal(e.Start(":8080"))
+	//testint
+	//testing2
 }
