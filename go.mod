@@ -1,6 +1,6 @@
 module github.com/DevEdwinF/smartback.git
 
-go 1.20
+go 1.19
 
 require (
 	gorm.io/driver/postgres v1.5.0
