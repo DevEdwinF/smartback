@@ -49,7 +49,6 @@ func UploadExcelAndAssignSchedules(c echo.Context) error {
 		var scheduleID int
 		err := config.DB.Raw(query, day, arrivalTime, departureTime, document).Row().Scan(&scheduleID)
 		if err != nil {
-			// Manejo de error si no se puede insertar el horario
 			continue
 		}
 	}
