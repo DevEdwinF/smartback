@@ -27,7 +27,7 @@ type UserAttendanceData struct {
 	FName            string    `json:"f_name"`
 	LName            string    `json:"l_name"`
 	Email            string    `json:"email"`
-	Location         string    `gorm:"location"`
+	Location         string    `json:"location"`
 	Arrival          string    `json:"arrival"`
 	Departure        string    `json:"departure"`
 	Late             *bool     `json:"late"`

@@ -14,4 +14,5 @@ func StatsRoutes(e *echo.Echo) {
 	group.GET("/day/all", controllers.CountAttendanceDay, middleware.AuthToken)
 	group.GET("/day/late", controllers.CountLateAttendancesForDay, middleware.AuthToken)
 	group.GET("/day/ontime", controllers.CountOnTimeAttendancesForDay, middleware.AuthToken)
+	group.GET("/total-collaborators", controllers.TotalCollaboratorsActiveController, middleware.AuthToken)
 }

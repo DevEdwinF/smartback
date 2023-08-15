@@ -39,9 +39,10 @@ func GetUserInfo(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"email":    claims["email"],
+		"document": claims["document"],
 		"fName":    claims["fName"],
 		"lName":    claims["lName"],
-		"role":     claims["role"],
+		"rol":      claims["rol"],
 		"roleName": claims["roleName"],
 	})
 }
@@ -50,7 +51,7 @@ func ValidateToken(c echo.Context) error {
 	user := c.Get("userToken").(*jwt.Token)
 	claims := user.Claims.(jwt.MapClaims)
 
-	rol, ok := claims["role"]
+	rol, ok := claims["rol"]
 	if !ok {
 		return echo.NewHTTPError(http.StatusBadRequest, "Error getting role")
 	}

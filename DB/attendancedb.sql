@@ -4,7 +4,8 @@ create table collaborators(
     document VARCHAR(25) UNIQUE,			
 	f_name varchar(50) not null,
 	l_name varchar(50) not null,
-	email varchar(50) not null,
+	email varchar(100) not null,
+	bmail varchar(100) not null,
 	position varchar(45) not null,
 	leader varchar(50) not null,
 	created_at timestamp
@@ -61,7 +62,7 @@ create table Users (
 	document VARCHAR(25),
 	f_name varchar(50) not null,
 	l_name varchar(50) not null,
-	email varchar(50) not null,
+	email varchar(100) not null,
 	password varchar(12) not null,
 	created_at timestamp
 )
@@ -78,4 +79,4 @@ INSERT INTO "users" ("f_name", "l_name", "email", "fk_role_id", "password")
 VALUES ('Edwin Fernando','Pirajan Arevalo', 'epirajan@smart.edu.co', 1, '123456');
 
 
-SELECT * FROM "attendances" WHERE fk_document_id = 123 AND DATE(created_at) = CURRENT_DATE ORDER BY "attendances"."id" LIMIT 1
+-- SELECT * FROM "attendances" WHERE fk_document_id = 123 AND DATE(created_at) = CURRENT_DATE ORDER BY "attendances"."id" LIMIT 1

@@ -42,3 +42,11 @@ func CountOnTimeAttendancesForDay(c echo.Context) error {
 	}
 	return c.JSON(http.StatusOK, map[string]int64{"count": count})
 }
+
+func TotalCollaboratorsActiveController(c echo.Context) error {
+	count, err := services.TotalCollaboratorsActiveService()
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
+	}
+	return c.JSON(http.StatusOK, map[string]int64{"count": count})
+}

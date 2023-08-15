@@ -54,8 +54,16 @@ func (s *UserService) GetUserById(document string) (models.User, error) {
 	return user, nil
 }
 
+// func (s *UserService) UpdateUser(user entity.UserData) error {
+// 	err := config.DB.Table("users").Where("document = ?", user.Document).Updates(&user).Error
+// 	if err != nil {
+// 		return errors.New("failed to update user")
+// 	}
+// 	return nil
+// }
+
 func (s *UserService) UpdateUser(user entity.UserData) error {
-	err := config.DB.Table("users").Where("document = ?", user.Document).Updates(&user).Error
+	err := config.DB.Table("users").Where("document = ?", user.Document).Updates(user).Error
 	if err != nil {
 		return errors.New("failed to update user")
 	}

@@ -58,11 +58,29 @@ func (h *UserController) GetUserById(c echo.Context) error {
 	return c.JSON(http.StatusOK, user)
 }
 
+// func (h *UserController) UpdateUser(c echo.Context) error {
+// 	var user entity.UserData
+// 	if err := c.Bind(&user); err != nil {
+// 		return echo.NewHTTPError(http.StatusBadRequest, "invalid request")
+// 	}
+
+// 	err := h.userService.UpdateUser(user)
+// 	if err != nil {
+// 		return echo.NewHTTPError(http.StatusInternalServerError, "failed to update user")
+// 	}
+// 	return c.JSON(http.StatusOK, map[string]string{
+// 		"message": "Usuario actualizado exitosamente",
+// 	})
+
+// }
+
 func (h *UserController) UpdateUser(c echo.Context) error {
 	var user entity.UserData
 	if err := c.Bind(&user); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "invalid request")
 	}
+
+	// newFkRoleID := user.FkRoleId
 
 	err := h.userService.UpdateUser(user)
 	if err != nil {
@@ -71,7 +89,6 @@ func (h *UserController) UpdateUser(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]string{
 		"message": "Usuario actualizado exitosamente",
 	})
-
 }
 
 func (h *UserController) DeleteUser(c echo.Context) error {
