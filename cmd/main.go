@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/DevEdwinF/smartback.git/internal/app/services"
 	"github.com/DevEdwinF/smartback.git/internal/config"
 	router "github.com/DevEdwinF/smartback.git/internal/infrastructure/api/router"
 
@@ -9,9 +10,9 @@ import (
 
 func main() {
 	config.ConnectDB()
-	// config.KactusDB()
+	config.KactusDB()
 	e := echo.New()
-	// services.RunCronJob()
+	services.RunCronJob()
 
 	router.GlobalRouter(e)
 
