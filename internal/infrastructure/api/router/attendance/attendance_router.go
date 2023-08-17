@@ -16,4 +16,5 @@ func AttendanceRoutes(e *echo.Echo) {
 	// group.POST("/register", controllers.SaveRegisterAttendance)
 	group.GET("/all", attendanceController.GetAllAttendance)
 	group.POST("/register/translated", controllers.SaveTranslated)
+	group.GET("/all/translated", controllers.GetAllTranslatedController)
 }

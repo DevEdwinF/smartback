@@ -16,10 +16,12 @@ type Attendance struct {
 	CreatedAt        time.Time
 }
 type Translatedcollaborators struct {
-	Id               int
+	Id               int `json:"id"`
 	FkCollaboratorId int
+	FName            string `json:"f_name"`
+	LName            string `json:"l_name"`
 	// Document         string
-	CreatedAt time.Time
+	CreatedAt time.Time `json:"date"`
 }
 
 // func (Translated) TableName() string {

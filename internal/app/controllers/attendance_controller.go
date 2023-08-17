@@ -188,7 +188,6 @@ func SaveTranslated(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	// Buscar el colaborador por el documento
 	var collaborator models.Collaborators
 	err = config.DB.Model(&collaborator).Where("document = ?", translatedEntity.Document).First(&collaborator).Error
 	if err != nil {
@@ -211,4 +210,13 @@ func SaveTranslated(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]string{
 		"message": "Translado registrado con éxito",
 	})
+}
+
+func GetAllTranslatedController(c echo.Context) error {
+	translatedcollaborators, err := services.GetAllTranslatedService()
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{"error": err.Error()})
+	}
+
+	return c.JSON(http.StatusOK, translatedcollaborators)
 }

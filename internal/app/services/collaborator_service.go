@@ -21,7 +21,12 @@ func NewCollaboratorService(db *gorm.DB) *CollaboratorService {
 func GetAllCollaborators() ([]entity.Collaborators, error) {
 	collaboratorWithSchedule := []entity.Collaborators{}
 
-	if err := config.DB.Table("collaborators").Select("*").Scan(&collaboratorWithSchedule).Error; err != nil {
+	if err := config.DB.Table("collaborators").
+		Select("*").
+		Order("id DESC").
+		Limit(500).
+		Scan(&collaboratorWithSchedule).
+		Error; err != nil {
 		return nil, err
 	}
 
@@ -38,6 +43,21 @@ func ValidateCollaboratorService(document string) (*models.Collaborators, error)
 		return nil, err
 	}
 	return &collaborator, nil
+}
+
+func GetAllTranslatedService() ([]models.Translatedcollaborators, error) {
+	translatedcollaborators := []models.Translatedcollaborators{}
+
+	err := config.DB.
+		Table("translatedcollaborators t").
+		Select("t.*, c.*").
+		Joins("INNER JOIN collaborators c ON t.fk_collaborator_id = c.id").
+		Scan(&translatedcollaborators).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return translatedcollaborators, nil
 }
 
 // func (s *CollaboratorService) GetByDocument(document string) (*models.Collaborators, error) {
