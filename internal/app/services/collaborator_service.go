@@ -24,7 +24,7 @@ func GetAllCollaborators() ([]entity.Collaborators, error) {
 	if err := config.DB.Table("collaborators").
 		Select("*").
 		Order("id DESC").
-		Limit(500).
+		// Limit(500).
 		Scan(&collaboratorWithSchedule).
 		Error; err != nil {
 		return nil, err
@@ -45,8 +45,8 @@ func ValidateCollaboratorService(document string) (*models.Collaborators, error)
 	return &collaborator, nil
 }
 
-func GetAllTranslatedService() ([]models.Translatedcollaborators, error) {
-	translatedcollaborators := []models.Translatedcollaborators{}
+func GetAllTranslatedService() ([]entity.Translatedcollaborators, error) {
+	translatedcollaborators := []entity.Translatedcollaborators{}
 
 	err := config.DB.
 		Table("translatedcollaborators t").

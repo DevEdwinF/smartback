@@ -18,8 +18,7 @@ type Attendance struct {
 type Translatedcollaborators struct {
 	Id               int `json:"id"`
 	FkCollaboratorId int
-	FName            string `json:"f_name"`
-	LName            string `json:"l_name"`
+
 	// Document         string
 	CreatedAt time.Time `json:"date"`
 }

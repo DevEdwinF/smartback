@@ -1,8 +1,18 @@
 package services
 
 import (
+	"bytes"
 	"database/sql"
+	"encoding/base64"
 	"errors"
+	"fmt"
+	"image"
+	"image/png"
+	"io/ioutil"
+	"log"
+	"os"
+	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/DevEdwinF/smartback.git/internal/app/models"
@@ -26,6 +36,8 @@ func (s *AttendanceService) RegisterAttendance(attendance entity.AttendanceEntit
 		}
 		return errors.New("Colaborador no encontrado")
 	}
+
+	fmt.Println(collaborator.Id)
 
 	timeNow := time.Now()
 
@@ -63,6 +75,47 @@ func (s *AttendanceService) RegisterAttendance(attendance entity.AttendanceEntit
 			return err
 		}
 	}
+
+	folderPath := "attendance_photos"
+	err = os.MkdirAll(folderPath, 0755)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	imagenCodificadaEnBase64 := "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAV4AAAEGCAYAAAAt9v2AAAAAAXNSR0IArs4c6QAACFJJREFUeF7t1MEJACAMBEHTiCXbsoJF7GvSwMEQdu7ZdzkCBAgQyARGeDNrQwQIEPgCwusRCBAgEAsIbwxujgABAsLrBwgQIBALCG8Mbo4AAQLC6wcIECAQCwhvDG6OAAECwusHCBAgEAsIbwxujgABAsLrBwgQIBALCG8Mbo4AAQLC6wcIECAQCwhvDG6OAAECwusHCBAgEAsIbwxujgABAsLrBwgQIBALCG8Mbo4AAQLC6wcIECAQCwhvDG6OAAECwusHCBAgEAsIbwxujgABAsLrBwgQIBALCG8Mbo4AAQLC6wcIECAQCwhvDG6OAAECwusHCBAgEAsIbwxujgABAsLrBwgQIBALCG8Mbo4AAQLC6wcIECAQCwhvDG6OAAECwusHCBAgEAsIbwxujgABAsLrBwgQIBALCG8Mbo4AAQLC6wcIECAQCwhvDG6OAAECwusHCBAgEAsIbwxujgABAsLrBwgQIBALCG8Mbo4AAQLC6wcIECAQCwhvDG6OAAECwusHCBAgEAsIbwxujgABAsLrBwgQIBALCG8Mbo4AAQLC6wcIECAQCwhvDG6OAAECwusHCBAgEAsIbwxujgABAsLrBwgQIBALCG8Mbo4AAQLC6wcIECAQCwhvDG6OAAECwusHCBAgEAsIbwxujgABAsLrBwgQIBALCG8Mbo4AAQLC6wcIECAQCwhvDG6OAAECwusHCBAgEAsIbwxujgABAsLrBwgQIBALCG8Mbo4AAQLC6wcIECAQCwhvDG6OAAECwusHCBAgEAsIbwxujgABAsLrBwgQIBALCG8Mbo4AAQLC6wcIECAQCwhvDG6OAAECwusHCBAgEAsIbwxujgABAsLrBwgQIBALCG8Mbo4AAQLC6wcIECAQCwhvDG6OAAECwusHCBAgEAsIbwxujgABAsLrBwgQIBALCG8Mbo4AAQLC6wcIECAQCwhvDG6OAAECwusHCBAgEAsIbwxujgABAsLrBwgQIBALCG8Mbo4AAQLC6wcIECAQCwhvDG6OAAECwusHCBAgEAsIbwxujgABAsLrBwgQIBALCG8Mbo4AAQLC6wcIECAQCwhvDG6OAAECwusHCBAgEAsIbwxujgABAsLrBwgQIBALCG8Mbo4AAQLC6wcIECAQCwhvDG6OAAECwusHCBAgEAsIbwxujgABAsLrBwgQIBALCG8Mbo4AAQLC6wcIECAQCwhvDG6OAAECwusHCBAgEAsIbwxujgABAsLrBwgQIBALCG8Mbo4AAQLC6wcIECAQCwhvDG6OAAECwusHCBAgEAsIbwxujgABAsLrBwgQIBALCG8Mbo4AAQLC6wcIECAQCwhvDG6OAAECwusHCBAgEAsIbwxujgABAsLrBwgQIBALCG8Mbo4AAQLC6wcIECAQCwhvDG6OAAECwusHCBAgEAsIbwxujgABAsLrBwgQIBALCG8Mbo4AAQLC6wcIECAQCwhvDG6OAAECwusHCBAgEAsIbwxujgABAsLrBwgQIBALCG8Mbo4AAQLC6wcIECAQCwhvDG6OAAECwusHCBAgEAsIbwxujgABAsLrBwgQIBALCG8Mbo4AAQLC6wcIECAQCwhvDG6OAAECwusHCBAgEAsIbwxujgABAsLrBwgQIBALCG8Mbo4AAQLC6wcIECAQCwhvDG6OAAECwusHCBAgEAsIbwxujgABAsLrBwgQIBALCG8Mbo4AAQLC6wcIECAQCwhvDG6OAAECwusHCBAgEAsIbwxujgABAsLrBwgQIBALCG8Mbo4AAQLC6wcIECAQCwhvDG6OAAECwusHCBAgEAsIbwxujgABAsLrBwgQIBALCG8Mbo4AAQLC6wcIECAQCwhvDG6OAAECwusHCBAgEAsIbwxujgABAsLrBwgQIBALCG8Mbo4AAQLC6wcIECAQCwhvDG6OAAECwusHCBAgEAsIbwxujgABAsLrBwgQIBALCG8Mbo4AAQLC6wcIECAQCwhvDG6OAAECwusHCBAgEAsIbwxujgABAsLrBwgQIBALCG8Mbo4AAQLC6wcIECAQCwhvDG6OAAECwusHCBAgEAsIbwxujgABAsLrBwgQIBALCG8Mbo4AAQLC6wcIECAQCwhvDG6OAAECwusHCBAgEAsIbwxujgABAsLrBwgQIBALCG8Mbo4AAQLC6wcIECAQCwhvDG6OAAECwusHCBAgEAsIbwxujgABAsLrBwgQIBALCG8Mbo4AAQLC6wcIECAQCwhvDG6OAAECwusHCBAgEAsIbwxujgABAsLrBwgQIBALCG8Mbo4AAQLC6wcIECAQCwhvDG6OAAECwusHCBAgEAsIbwxujgABAsLrBwgQIBALCG8Mbo4AAQLC6wcIECAQCwhvDG6OAAECwusHCBAgEAsIbwxujgABAsLrBwgQIBALCG8Mbo4AAQLC6wcIECAQCwhvDG6OAAECwusHCBAgEAsIbwxujgABAsLrBwgQIBALCG8Mbo4AAQLC6wcIECAQCwhvDG6OAAECwusHCBAgEAsIbwxujgABAsLrBwgQIBALCG8Mbo4AAQLC6wcIECAQCwhvDG6OAAECwusHCBAgEAsIbwxujgABAsLrBwgQIBALCG8Mbo4AAQLC6wcIECAQCwhvDG6OAAECwusHCBAgEAsIbwxujgABAsLrBwgQIBALCG8Mbo4AAQLC6wcIECAQCwhvDG6OAAECwusHCBAgEAsIbwxujgABAsLrBwgQIBALCG8Mbo4AAQLC6wcIECAQCwhvDG6OAAECwusHCBAgEAsIbwxujgABAsLrBwgQIBALCG8Mbo4AAQLC6wcIECAQCwhvDG6OAAECwusHCBAgEAsIbwxujgABAg8l6bsh4BWtnQAAAABJRU5ErkJggg=="
+
+	marca := ";base64,"
+	indice := strings.Index(imagenCodificadaEnBase64, marca)
+	if indice != -1 {
+		imagenCodificadaEnBase64 = imagenCodificadaEnBase64[indice+len(marca):]
+	}
+
+	decodificado, err := base64.StdEncoding.DecodeString(imagenCodificadaEnBase64)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	imagen, _, err := image.Decode(bytes.NewReader(decodificado))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	photoName := fmt.Sprintf("%s%d.png", "1150856537", time.Now().Unix())
+
+	archivo, err := os.Create(fmt.Sprintf("%s/%s", folderPath, photoName))
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = png.Encode(archivo, imagen)
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = archivo.Close()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	attendance.Photo = photoName
 
 	switch attendance.State {
 	case "arrival":
@@ -106,6 +159,18 @@ func (s *AttendanceService) RegisterAttendance(attendance entity.AttendanceEntit
 	return errors.New("Estado inválido")
 }
 
+// func (service *AttendanceService) GetAllAttendance() ([]entity.UserAttendanceData, error) {
+// 	attendance := []entity.UserAttendanceData{}
+// 	err := config.DB.Table("attendances a").
+// 		Select("c.f_name, c.l_name, c.email, c.document, a.*").
+// 		Joins("INNER JOIN collaborators c on c.id = a.fk_collaborator_id").
+// 		Find(&attendance).Error
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	return attendance, nil
+// }
+
 func (service *AttendanceService) GetAllAttendance() ([]entity.UserAttendanceData, error) {
 	attendance := []entity.UserAttendanceData{}
 	err := config.DB.Table("attendances a").
@@ -115,5 +180,20 @@ func (service *AttendanceService) GetAllAttendance() ([]entity.UserAttendanceDat
 	if err != nil {
 		return nil, err
 	}
+
+	folderPath := "attendance_photos"
+
+	for i := range attendance {
+		photoName := attendance[i].Photo
+		imagePath := filepath.Join(folderPath, photoName)
+
+		imageData, err := ioutil.ReadFile(imagePath)
+		if err != nil {
+			return nil, err
+		}
+
+		attendance[i].Photo = base64.StdEncoding.EncodeToString(imageData)
+	}
+
 	return attendance, nil
 }

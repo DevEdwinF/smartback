@@ -12,11 +12,11 @@ import "time"
 type AttendanceEntity struct {
 	ID               int64     `json:"id"`
 	FkCollaboratorId int       `json:"fk_collaborator_id"`
-	Document         string    `json:"document"`
-	State            string    `json:"state"`
-	Location         string    `josn:"location"`
+	Document         string    `json:"document" form:"document"`
+	State            string    `json:"state" form:"state"`
+	Location         string    `josn:"location" form:"location"`
 	Late             *bool     `json:"late"`
-	Photo            string    `json:"photo"`
+	Photo            string    `json:"photo" form:"location"`
 	CreatedAt        time.Time `json:"date"`
 }
 
@@ -43,5 +43,7 @@ type ValidateSchedule struct {
 type Translatedcollaborators struct {
 	FkCollaboratorId int       `json:"id"`
 	Document         string    `json:"document"`
+	FName            string    `json:"f_name"`
+	LName            string    `json:"l_name"`
 	CreatedAt        time.Time `json:"date"`
 }

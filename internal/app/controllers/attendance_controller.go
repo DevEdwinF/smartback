@@ -3,6 +3,7 @@ package controllers
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"time"
@@ -28,6 +29,7 @@ func NewAttendanceController(service *services.AttendanceService) *AttendanceCon
 func (ac *AttendanceController) SaveRegisterAttendance(c echo.Context) error {
 	var attendance entity.AttendanceEntity
 	err := c.Bind(&attendance)
+	fmt.Println("id del controlador", attendance.Document)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
@@ -139,6 +141,28 @@ func (ac *AttendanceController) SaveRegisterAttendance(c echo.Context) error {
 // 	}
 
 // 	return echo.NewHTTPError(http.StatusBadRequest, "Estado inválido")
+// }
+
+// func (controller *AttendanceController) GetAllAttendance(c echo.Context) error {
+// 	attendance, err := controller.Service.GetAllAttendance()
+// 	if err != nil {
+// 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+// 	}
+
+// 	return c.JSON(http.StatusOK, attendance)
+// }
+
+// func (controller *AttendanceController) GetAllAttendance(c echo.Context) error {
+// 	attendance, err := controller.Service.GetAllAttendance()
+// 	if err != nil {
+// 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+// 	}
+
+// 	for i := range attendance {
+// 		attendance[i].Photo = ""
+// 	}
+
+// 	return c.JSON(http.StatusOK, attendance)
 // }
 
 func (controller *AttendanceController) GetAllAttendance(c echo.Context) error {
