@@ -16,7 +16,7 @@ type AttendanceEntity struct {
 	State            string    `json:"state" form:"state"`
 	Location         string    `josn:"location" form:"location"`
 	Late             *bool     `json:"late"`
-	Photo            string    `json:"photo" form:"location"`
+	Photo            string    `json:"photo" form:"photo"`
 	CreatedAt        time.Time `json:"date"`
 }
 

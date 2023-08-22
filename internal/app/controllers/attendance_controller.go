@@ -3,7 +3,6 @@ package controllers
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"time"
@@ -29,7 +28,6 @@ func NewAttendanceController(service *services.AttendanceService) *AttendanceCon
 func (ac *AttendanceController) SaveRegisterAttendance(c echo.Context) error {
 	var attendance entity.AttendanceEntity
 	err := c.Bind(&attendance)
-	fmt.Println("id del controlador", attendance.Document)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
