@@ -5,6 +5,7 @@ import (
 	"github.com/DevEdwinF/smartback.git/internal/infrastructure/api/router/auth"
 	collaborator "github.com/DevEdwinF/smartback.git/internal/infrastructure/api/router/collaborator"
 	"github.com/DevEdwinF/smartback.git/internal/infrastructure/api/router/kactus"
+	"github.com/DevEdwinF/smartback.git/internal/infrastructure/api/router/roles"
 	"github.com/DevEdwinF/smartback.git/internal/infrastructure/api/router/schedule"
 	"github.com/DevEdwinF/smartback.git/internal/infrastructure/api/router/stats"
 	"github.com/DevEdwinF/smartback.git/internal/infrastructure/api/router/user"
@@ -30,5 +31,6 @@ func GlobalRouter(e *echo.Echo) {
 	stats.StatsRoutes(e)
 	kactus.KactusRouter(e)
 	user.UserRoutes(e)
+	roles.RolesRoutes(e)
 
 }

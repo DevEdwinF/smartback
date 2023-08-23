@@ -9,7 +9,7 @@ import (
 
 func main() {
 	config.ConnectDB()
-	// config.KactusDB()
+	config.KactusDB()
 	e := echo.New()
 	// services.RunCronJob()
 
