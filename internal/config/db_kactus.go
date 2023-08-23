@@ -36,11 +36,11 @@ func loadEnvKactus() {
 }
 
 func buildDSNKactus() string {
-	domain := os.Getenv("KACTUS_DB_DOMAIN")
-	user := os.Getenv("KACTUS_DB_USER")
-	password := os.Getenv("KACTUS_DB_PASSWORD")
-	port := os.Getenv("KACTUS_DB_PORT")
-	database := os.Getenv("KACTUS_DB_DATABASE")
+	user := os.Getenv("KDB_USER")
+	password := os.Getenv("KDB_PASSWORD")
+	domain := os.Getenv("KDB_DOMAIN")
+	port := os.Getenv("KDB_PORT")
+	database := os.Getenv("KDB_DATABASE")
 
 	dsn := "sqlserver://%s:%s@%s:%s?database=%s"
 	return fmt.Sprintf(dsn, user, password, domain, port, database)
