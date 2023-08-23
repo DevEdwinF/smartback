@@ -187,16 +187,13 @@ func (service *AttendanceService) GetAllAttendance() ([]entity.UserAttendanceDat
 		photoName := attendance[i].Photo
 		imagePath := filepath.Join(folderPath, photoName)
 
-		// Leer el archivo de imagen directamente como bytes
 		imageData, err := ioutil.ReadFile(imagePath)
 		if err != nil {
 			return nil, err
 		}
 
-		// Convertir los datos de la imagen a base64
 		base64Image := base64.StdEncoding.EncodeToString(imageData)
 
-		// Actualizar el campo de foto con la imagen codificada en base64
 		attendance[i].Photo = base64Image
 	}
 
