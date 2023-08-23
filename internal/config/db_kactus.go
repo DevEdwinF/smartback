@@ -16,7 +16,7 @@ func KactusDB() {
 	loadEnvKactus()
 
 	// dsn := buildDSNKactus()
-	dsn := "sqlserver://ASISTENCIA:*T3cn0l0g14-*@localhost:5432?database=KACTUS"
+	dsn := "sqlserver://ASISTENCIA:*T3cn0l0g14-*@localhost:1433?database=KACTUS"
 
 	db, err := gorm.Open(sqlserver.Open(dsn), &gorm.Config{})
 	if err != nil {
