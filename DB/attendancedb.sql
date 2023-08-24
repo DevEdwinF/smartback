@@ -7,6 +7,7 @@ create table collaborators(
 	email varchar(100) not null,
 	bmail varchar(100) not null,
 	position varchar(45) not null,
+	state VARCHAR(10) not null,
 	leader varchar(50) not null,
 	created_at timestamp
 );
