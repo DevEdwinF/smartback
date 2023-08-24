@@ -12,7 +12,7 @@ func GetAllColab() ([]models.NmContr, error) {
 		Joins("INNER JOIN bi_emple ON NM_CONTR.cod_empl = bi_emple.cod_empl").
 		Joins("INNER JOIN BI_CARGO ON NM_CONTR.cod_carg = BI_CARGO.cod_carg").
 		Joins("INNER JOIN bi_emple AS NomJefe ON NM_CONTR.cod_frep = NomJefe.cod_empl").
-		Where("NM_CONTR.ind_acti = ?", "a").
+		Where("state = ?", "A").
 		Scan(&collaborators).Error
 	if err != nil {
 		return nil, err
