@@ -67,7 +67,7 @@ func UploadExcelAndAssignSchedules(c echo.Context) error {
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, "Error al abrir el archivo subido")
 	}
-	defer src.Close()
+	// defer src.Close()
 
 	excelFile, err := excelize.OpenReader(src)
 	if err != nil {
