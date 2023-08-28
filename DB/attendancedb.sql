@@ -34,8 +34,8 @@ VALUES (1 ,'1032500648', 'Edwin Fernando', 'Pirajan Arevalo', 'epiraja@smart.edu
 create table schedules(
 	id serial primary key,
 	day varchar(11),
-	arrival_time VARCHAR(10),
-	departure_time VARCHAR(10)
+	arrival_time VARCHAR,
+	departure_time VARCHAR
 )
 
 ALTER TABLE schedules
