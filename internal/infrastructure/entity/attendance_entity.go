@@ -30,6 +30,7 @@ type UserAttendanceData struct {
 	Location         string    `json:"location"`
 	Arrival          string    `json:"arrival"`
 	Departure        string    `json:"departure"`
+	Leader           string    `json:"leader"`
 	Late             *bool     `json:"late"`
 	Photo            string    `json:"photo"`
 	CreatedAt        time.Time `json:"date"`

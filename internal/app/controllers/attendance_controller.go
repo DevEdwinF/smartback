@@ -11,6 +11,7 @@ import (
 	"github.com/DevEdwinF/smartback.git/internal/app/services"
 	"github.com/DevEdwinF/smartback.git/internal/config"
 	"github.com/DevEdwinF/smartback.git/internal/infrastructure/entity"
+	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
 )
@@ -46,6 +47,42 @@ func (controller *AttendanceController) GetAllAttendance(c echo.Context) error {
 	attendance, err := controller.Service.GetAllAttendance()
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+
+	return c.JSON(http.StatusOK, attendance)
+}
+
+func (controller *AttendanceController) GetAttendanceForLeader(c echo.Context) error {
+	userToken := c.Get("userToken")
+
+	if userToken == nil {
+		return echo.NewHTTPError(http.StatusUnauthorized, "Token de usuario no encontrado")
+	}
+
+	token, ok := userToken.(*jwt.Token)
+	if !ok {
+		return echo.NewHTTPError(http.StatusInternalServerError, "Error al procesar el token")
+	}
+
+	claims := token.Claims.(jwt.MapClaims)
+
+	leaderFName, okFName := claims["fName"].(string)
+	leaderLName, okLName := claims["lName"].(string)
+
+	if !okFName || !okLName {
+		return echo.NewHTTPError(http.StatusBadRequest, map[string]interface{}{
+			"error": "Este usuario no tiene ningún colaborador asignado",
+		})
+	}
+
+	leaderFullName := leaderFName + " " + leaderLName
+
+	attendanceService := &services.AttendanceService{}
+	attendance, err := attendanceService.GetAttendanceForLeader(leaderFullName)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"error": "Error obteniendo la asistencia",
+		})
 	}
 
 	return c.JSON(http.StatusOK, attendance)

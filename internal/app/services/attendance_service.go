@@ -159,22 +159,22 @@ func (s *AttendanceService) RegisterAttendance(attendance entity.AttendanceEntit
 	return errors.New("Estado inválido")
 }
 
-// func (service *AttendanceService) GetAllAttendance() ([]entity.UserAttendanceData, error) {
-// 	attendance := []entity.UserAttendanceData{}
-// 	err := config.DB.Table("attendances a").
-// 		Select("c.f_name, c.l_name, c.email, c.document, a.*").
-// 		Joins("INNER JOIN collaborators c on c.id = a.fk_collaborator_id").
-// 		Find(&attendance).Error
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	return attendance, nil
-// }
-
 func (service *AttendanceService) GetAllAttendance() ([]entity.UserAttendanceData, error) {
 	attendance := []entity.UserAttendanceData{}
 	err := config.DB.Table("attendances a").
 		Select("c.f_name, c.l_name, c.email, c.document, a.*").
+		Joins("INNER JOIN collaborators c on c.id = a.fk_collaborator_id").
+		Find(&attendance).Error
+	if err != nil {
+		return nil, err
+	}
+	return attendance, nil
+}
+
+func (service *AttendanceService) GetAllAttendanceForLeader() ([]entity.UserAttendanceData, error) {
+	attendance := []entity.UserAttendanceData{}
+	err := config.DB.Table("attendances a").
+		Select("c.f_name, c.l_name, c.email, c.leader, c.document, a.*").
 		Joins("INNER JOIN collaborators c on c.id = a.fk_collaborator_id").
 		Find(&attendance).Error
 	if err != nil {
@@ -199,3 +199,63 @@ func (service *AttendanceService) GetAllAttendance() ([]entity.UserAttendanceDat
 
 	return attendance, nil
 }
+
+func (service *AttendanceService) GetAttendanceForLeader(leaderFullName string) ([]entity.UserAttendanceData, error) {
+	attendance := []entity.UserAttendanceData{}
+	err := config.DB.Table("attendances a").
+		Select("c.f_name, c.l_name, c.email, c.leader, c.document, a.*").
+		Joins("INNER JOIN collaborators c ON c.id = a.fk_collaborator_id").
+		Joins("INNER JOIN users u ON CONCAT(u.f_name, ' ', u.l_name) = c.leader").
+		Where("c.leader = ?", leaderFullName).
+		Find(&attendance).Error
+	if err != nil {
+		return nil, err
+	}
+
+	folderPath := "attendance_photos"
+
+	for i := range attendance {
+		photoName := attendance[i].Photo
+		imagePath := filepath.Join(folderPath, photoName)
+
+		imageData, err := ioutil.ReadFile(imagePath)
+		if err != nil {
+			return nil, err
+		}
+
+		base64Image := base64.StdEncoding.EncodeToString(imageData)
+
+		attendance[i].Photo = base64Image
+	}
+
+	return attendance, nil
+}
+
+// func (service *AttendanceService) GetAllAttendanceTest() ([]entity.UserAttendanceData, error) {
+// 	attendance := []entity.UserAttendanceData{}
+// 	err := config.DB.Table("attendances a").
+// 		Select("c.f_name, c.l_name, c.email, c.document, a.*").
+// 		Joins("INNER JOIN collaborators c on c.id = a.fk_collaborator_id").
+// 		Find(&attendance).Error
+// 	if err != nil {
+// 		return nil, err
+// 	}
+
+// 	folderPath := "attendance_photos"
+
+// 	for i := range attendance {
+// 		photoName := attendance[i].Photo
+// 		imagePath := filepath.Join(folderPath, photoName)
+
+// 		imageData, err := ioutil.ReadFile(imagePath)
+// 		if err != nil {
+// 			return nil, err
+// 		}
+
+// 		base64Image := base64.StdEncoding.EncodeToString(imageData)
+
+// 		attendance[i].Photo = base64Image
+// 	}
+
+// 	return attendance, nil
+// }

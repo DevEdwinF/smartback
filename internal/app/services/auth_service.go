@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-	"time"
 
 	"github.com/DevEdwinF/smartback.git/internal/app/models"
 	"github.com/DevEdwinF/smartback.git/internal/config"
@@ -40,7 +39,6 @@ func GenerateToken(user *models.User) (string, error) {
 	claims["lName"] = user.LName
 	claims["rol"] = user.FkRoleId
 	claims["roleName"] = user.RoleName
-	claims["exp"] = time.Now().Add(time.Hour * 72).Unix()
 
 	tokenString, err := token.SignedString([]byte(os.Getenv("SECRET")))
 	if err != nil {
