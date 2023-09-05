@@ -14,8 +14,11 @@ func AttendanceRoutes(e *echo.Echo) {
 	group := e.Group("/api/attendance")
 	group.GET("/validate/:doc", controllers.ValidateCollaboratorController)
 	group.POST("/register", attendanceController.SaveRegisterAttendance)
-	group.GET("/all", attendanceController.GetAllAttendance)
+	group.GET("/all", attendanceController.GetAllAttendance, middleware.AuthToken)
+	group.GET("/late/all", attendanceController.GetAllAttendanceForLate, middleware.AuthToken)
 	group.GET("/leader/all", attendanceController.GetAttendanceForLeader, middleware.AuthToken)
+	group.GET("/leader/late/all", attendanceController.GetAttendanceForLeaderToLate, middleware.AuthToken)
+	group.GET("/late/all", attendanceController.GetAllAttendanceForLate)
 	group.POST("/register/translated", controllers.SaveTranslated)
 	group.GET("/all/translated", controllers.GetAllTranslatedController, middleware.AuthToken)
 }
