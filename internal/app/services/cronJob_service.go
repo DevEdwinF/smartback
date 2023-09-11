@@ -48,16 +48,12 @@ func SyncData() error {
 	return nil
 }
 
-//testing
-
 func syncCollaborators(sourceCollaborators []models.NmContr, destinationCollaborators []entity.Collaborators) error {
 	for _, sourceCollaborator := range sourceCollaborators {
 		found := false
 
-		// Busca el colaborador en la base de datos de destino
 		for _, destinationCollaborator := range destinationCollaborators {
 			if sourceCollaborator.Document == destinationCollaborator.Document {
-				// El colaborador ya existe en la base de datos de destino, no es necesario agregarlo
 				found = true
 				break
 			}
@@ -66,15 +62,17 @@ func syncCollaborators(sourceCollaborators []models.NmContr, destinationCollabor
 		if !found {
 
 			newCollaborator := entity.Collaborators{
-				Document:  sourceCollaborator.Document,
-				FName:     sourceCollaborator.FName,
-				LName:     sourceCollaborator.LName,
-				Position:  sourceCollaborator.Position,
-				Email:     sourceCollaborator.EMail,
-				Bmail:     sourceCollaborator.BMail,
-				State:     sourceCollaborator.State,
-				Leader:    sourceCollaborator.FnLeader + " " + sourceCollaborator.LnLeader,
-				CreatedAt: time.Now(),
+				Document:   sourceCollaborator.Document,
+				FName:      sourceCollaborator.FName,
+				LName:      sourceCollaborator.LName,
+				Position:   sourceCollaborator.Position,
+				Email:      sourceCollaborator.EMail,
+				Bmail:      sourceCollaborator.BMail,
+				State:      sourceCollaborator.State,
+				Leader:     sourceCollaborator.FnLeader + " " + sourceCollaborator.LnLeader,
+				Subproceso: sourceCollaborator.Subproceso,
+				Sede:       sourceCollaborator.Sede,
+				CreatedAt:  time.Now(),
 			}
 
 			err := AddCollaboratorToDestinationDB(newCollaborator)
