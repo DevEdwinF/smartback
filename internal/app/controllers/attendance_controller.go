@@ -110,19 +110,16 @@ func (controller *AttendanceController) GetAttendanceForLeaderToLate(c echo.Cont
 
 	claims := token.Claims.(jwt.MapClaims)
 
-	leaderFName, okFName := claims["fName"].(string)
-	leaderLName, okLName := claims["lName"].(string)
+	leaderDocument, ok := claims["document"].(string)
 
-	if !okFName || !okLName {
+	if !ok {
 		return echo.NewHTTPError(http.StatusBadRequest, map[string]interface{}{
-			"error": "Este usuario no tiene ningún colaborador asignado",
+			"error": "Este usuario no tiene ningún documento de líder asignado",
 		})
 	}
 
-	leaderFullName := leaderFName + " " + leaderLName
-
 	attendanceService := &services.AttendanceService{}
-	attendance, err := attendanceService.GetAttendanceForLeaderToLate(leaderFullName)
+	attendance, err := attendanceService.GetAttendanceForLeaderToLate(leaderDocument)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
 			"error": "Error obteniendo la asistencia",

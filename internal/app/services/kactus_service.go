@@ -19,8 +19,8 @@ func GetAllColab() ([]models.NmContr, error) {
             NomJefe.cod_inte AS "Jefe documento",
             NomJefe.nom_empl AS fn_leader,
             NomJefe.ape_empl AS ln_leader,
-            gc.nom_ccos AS subproceso,
-            sa.NOM_AREA AS Sede,
+            gc.nom_ccos AS subprocess,
+            sa.NOM_AREA AS headquarters,
             NM_CONTR.ind_acti AS state`).
 		Joins(`
             INNER JOIN bi_emple ON NM_CONTR.cod_empl = bi_emple.cod_empl
