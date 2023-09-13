@@ -32,6 +32,7 @@ type UserAttendanceData struct {
 	Departure        string    `json:"departure"`
 	Leader           string    `json:"leader"`
 	LeaderDocument   string    `json:"leader_document"`
+	Subprocess       string    `json:"sub_process"`
 	Late             *bool     `json:"late"`
 	Photo            string    `json:"photo"`
 	CreatedAt        time.Time `json:"date"`
