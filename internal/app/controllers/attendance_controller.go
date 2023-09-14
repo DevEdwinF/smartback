@@ -61,6 +61,7 @@ func (controller *AttendanceController) GetAllAttendanceForLate(c echo.Context) 
 }
 
 func (controller *AttendanceController) GetAttendanceForLeader(c echo.Context) error {
+
 	userToken := c.Get("userToken")
 
 	if userToken == nil {
@@ -74,19 +75,16 @@ func (controller *AttendanceController) GetAttendanceForLeader(c echo.Context) e
 
 	claims := token.Claims.(jwt.MapClaims)
 
-	leaderFName, okFName := claims["fName"].(string)
-	leaderLName, okLName := claims["lName"].(string)
+	leaderDocument, ok := claims["document"].(string)
 
-	if !okFName || !okLName {
+	if !ok {
 		return echo.NewHTTPError(http.StatusBadRequest, map[string]interface{}{
-			"error": "Este usuario no tiene ningún colaborador asignado",
+			"error": "Este usuario no tiene ningún documento de líder asignado",
 		})
 	}
 
-	leaderFullName := leaderFName + " " + leaderLName
-
 	attendanceService := &services.AttendanceService{}
-	attendance, err := attendanceService.GetAttendanceForLeader(leaderFullName)
+	attendance, err := attendanceService.GetAttendanceForLeader(leaderDocument)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
 			"error": "Error obteniendo la asistencia",

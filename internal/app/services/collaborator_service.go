@@ -33,6 +33,22 @@ func GetAllCollaborators() ([]entity.Collaborators, error) {
 	return collaboratorWithSchedule, nil
 }
 
+func GetCollaboratorForLeader(leaderDocument string) ([]entity.Collaborators, error) {
+	collaboratorWithSchedule := []entity.Collaborators{}
+
+	if err := config.DB.Table("collaborators").
+		Select("*").
+		Where("leader_document = ?", leaderDocument).
+		Order("id DESC").
+		// Limit(500).
+		Scan(&collaboratorWithSchedule).
+		Error; err != nil {
+		return nil, err
+	}
+
+	return collaboratorWithSchedule, nil
+}
+
 func ValidateCollaboratorService(document string) (*models.Collaborators, error) {
 	var collaborator models.Collaborators
 	err := config.DB.Model(&collaborator).Where("document = ?", document).First(&collaborator).Error

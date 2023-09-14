@@ -188,13 +188,12 @@ func (service *AttendanceService) GetAllAttendance() ([]entity.UserAttendanceDat
 	return attendance, nil
 }
 
-func (service *AttendanceService) GetAttendanceForLeader(leaderFullName string) ([]entity.UserAttendanceData, error) {
+func (service *AttendanceService) GetAttendanceForLeader(leaderDocument string) ([]entity.UserAttendanceData, error) {
 	attendance := []entity.UserAttendanceData{}
 	err := config.DB.Table("attendances a").
 		Select("c.f_name, c.l_name, c.email, c.leader, c.document, a.*").
 		Joins("INNER JOIN collaborators c ON c.id = a.fk_collaborator_id").
-		Joins("INNER JOIN users u ON CONCAT(u.f_name, ' ', u.l_name) = c.leader").
-		Where("c.leader = ?", leaderFullName).
+		Where("c.leader_document = ?", leaderDocument).
 		Find(&attendance).Error
 	if err != nil {
 		return nil, err
