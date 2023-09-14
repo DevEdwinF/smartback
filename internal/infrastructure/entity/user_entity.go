@@ -29,8 +29,8 @@ type Collaborators struct {
 	State          string    `json:"state"`
 	Leader         string    `json:"leader"`
 	LeaderDocument string    `json:"leader_document"`
-	Subprocess     string    `json:"subproceso"`
-	Headquarters   string    `json:"sede"`
+	Subprocess     string    `json:"subprocess"`
+	Headquarters   string    `json:"headquarters"`
 	CreatedAt      time.Time `json:"date"`
 }
 

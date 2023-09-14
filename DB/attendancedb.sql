@@ -9,8 +9,9 @@ create table
         position varchar(45) not null,
         state VARCHAR(10) not null,
         leader varchar(50) not null,
-        leader_document VARCHAR(20),
-        
+        leader_document VARCHAR(20),  
+        subprocess VARCHAR(50),
+        headquarters VARCHAR(30),
         created_at timestamp
     );
 
