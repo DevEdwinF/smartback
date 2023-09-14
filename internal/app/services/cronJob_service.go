@@ -68,18 +68,18 @@ func syncCollaborators(sourceCollaborators []models.NmContr, destinationCollabor
 		if !found {
 
 			newCollaborator := entity.Collaborators{
-				Document: sourceCollaborator.Document,
-				FName:    sourceCollaborator.FName,
-				LName:    sourceCollaborator.LName,
-				Position: sourceCollaborator.Position,
-				Email:    sourceCollaborator.EMail,
-				Bmail:    sourceCollaborator.BMail,
-				State:    sourceCollaborator.State,
-				Leader:   sourceCollaborator.FnLeader + " " + sourceCollaborator.LnLeader,
-				// LeaderDocument: sourceCollaborator.LeaderDocument,
-				// Subprocess:     sourceCollaborator.Subprocess,
-				// Headquarters:   sourceCollaborator.Headquarters,
-				CreatedAt: time.Now(),
+				Document:       sourceCollaborator.Document,
+				FName:          sourceCollaborator.FName,
+				LName:          sourceCollaborator.LName,
+				Position:       sourceCollaborator.Position,
+				Email:          sourceCollaborator.EMail,
+				Bmail:          sourceCollaborator.BMail,
+				State:          sourceCollaborator.State,
+				Leader:         sourceCollaborator.FnLeader + " " + sourceCollaborator.LnLeader,
+				LeaderDocument: sourceCollaborator.LeaderDocument,
+				Subprocess:     sourceCollaborator.Subprocess,
+				Headquarters:   sourceCollaborator.Headquarters,
+				CreatedAt:      time.Now(),
 			}
 
 			err := AddCollaboratorToDestinationDB(newCollaborator)

@@ -1,9 +1,5 @@
 package models
 
-// type BiEmple struct {
-// 	CodEmpl string
-// }
-
 type NmContr struct {
 	Document       string `gorm:"column:document"`
 	FName          string
@@ -16,6 +12,6 @@ type NmContr struct {
 	FnLeader       string
 	LnLeader       string
 	LeaderDocument string
-	// Subprocess     string
-	// Headquarters   string
+	Subprocess     string
+	Headquarters   string
 }

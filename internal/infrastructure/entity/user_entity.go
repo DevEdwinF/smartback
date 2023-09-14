@@ -19,19 +19,19 @@ type UserData struct {
 type Users []UserData
 
 type Collaborators struct {
-	ID       int    `json:"id_collaborator"`
-	Document string `json:"document"`
-	FName    string `json:"f_name"`
-	LName    string `json:"l_name"`
-	Bmail    string `json:"bmail"`
-	Email    string `json:"email"`
-	Position string `json:"position"`
-	State    string `json:"state"`
-	Leader   string `json:"leader"`
-	// LeaderDocument string    `json:"leader_document"`
-	// Subprocess     string    `json:"subprocess"`
-	// Headquarters   string    `json:"headquarters"`
-	CreatedAt time.Time `json:"date"`
+	ID             int       `json:"id_collaborator"`
+	Document       string    `json:"document"`
+	FName          string    `json:"f_name"`
+	LName          string    `json:"l_name"`
+	Bmail          string    `json:"bmail"`
+	Email          string    `json:"email"`
+	Position       string    `json:"position"`
+	State          string    `json:"state"`
+	Leader         string    `json:"leader"`
+	LeaderDocument string    `json:"leader_document"`
+	Subprocess     string    `json:"subprocess"`
+	Headquarters   string    `json:"headquarters"`
+	CreatedAt      time.Time `json:"date"`
 }
 
 type CollaboratorsDataEntity struct {
