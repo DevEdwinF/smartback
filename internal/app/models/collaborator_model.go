@@ -3,15 +3,15 @@ package models
 import "time"
 
 type Collaborators struct {
-	Id             int
-	Document       string
-	FName          string
-	LName          string
-	Email          string
-	Bmail          string
-	State          string
-	Leader         string
-	LeaderDocument string
+	Id       int
+	Document string
+	FName    string
+	LName    string
+	Email    string
+	Bmail    string
+	State    string
+	Leader   string
+	// LeaderDocument string
 	// Subprocess     string
 	// Headquarters   string
 	Position  string
