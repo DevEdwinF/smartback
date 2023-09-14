@@ -12,10 +12,10 @@ type Collaborators struct {
 	State          string
 	Leader         string
 	LeaderDocument string
-	Subprocess     string
-	Headquarters   string
-	Position       string
-	CreatedAt      time.Time
+	// Subprocess     string
+	// Headquarters   string
+	Position  string
+	CreatedAt time.Time
 }
 
 type CollaboratorsData struct {

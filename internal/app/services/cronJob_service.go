@@ -77,9 +77,9 @@ func syncCollaborators(sourceCollaborators []models.NmContr, destinationCollabor
 				State:          sourceCollaborator.State,
 				Leader:         sourceCollaborator.FnLeader + " " + sourceCollaborator.LnLeader,
 				LeaderDocument: sourceCollaborator.LeaderDocument,
-				Subprocess:     sourceCollaborator.Subprocess,
-				Headquarters:   sourceCollaborator.Headquarters,
-				CreatedAt:      time.Now(),
+				// Subprocess:     sourceCollaborator.Subprocess,
+				// Headquarters:   sourceCollaborator.Headquarters,
+				CreatedAt: time.Now(),
 			}
 
 			err := AddCollaboratorToDestinationDB(newCollaborator)
