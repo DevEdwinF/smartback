@@ -16,6 +16,6 @@ type NmContr struct {
 	FnLeader       string
 	LnLeader       string
 	LeaderDocument string
-	Subprocess     string `gorm:"column:subproceso"` // Nuevo campo
-	Headquarters   string `gorm:"column:sede"`       // Nuevo campo
+	Subprocess     string /* `gorm:"column:subproceso"` */ // Nuevo campo
+	Headquarters   string /* `gorm:"column:sede"` */       // Nuevo campo
 }
