@@ -179,11 +179,11 @@ func (service *AttendanceService) GetAllAttendance() ([]entity.UserAttendanceDat
 
 		imageData, err := ioutil.ReadFile(imagePath)
 		if err != nil {
-			return nil, err
+			attendance[i].Photo = ""
+			continue
 		}
 
 		base64Image := base64.StdEncoding.EncodeToString(imageData)
-
 		attendance[i].Photo = base64Image
 	}
 
@@ -209,7 +209,8 @@ func (service *AttendanceService) GetAttendanceForLeader(leaderDocument string) 
 
 		imageData, err := ioutil.ReadFile(imagePath)
 		if err != nil {
-			return nil, err
+			attendance[i].Photo = ""
+			continue
 		}
 
 		base64Image := base64.StdEncoding.EncodeToString(imageData)
