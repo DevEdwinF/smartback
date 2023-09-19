@@ -13,12 +13,12 @@ import (
 var DB *gorm.DB
 
 func ConnectDB() {
-	loadEnv()
+	// loadEnv()
 
-	dsn := buildDSN()
+	// dsn := buildDSN()
 	// dsn := "user=asistencia password=1234456 dbname=asistencia port=5432 sslmode=disable"
 	// PGPASSWORD=7xt3Vx6eAevhZTMmSiGJ psql -h containers-us-west-210.railway.app -U postgres -p 7112 -d railway
-	// dsn := "host=localhost user=asistencias password=123456 dbname=asistencias port=5432 sslmode=disable"
+	dsn := "host=localhost user=asistencias password=*T3cn0l0g14* dbname=asistenciasdb port=5432 sslmode=disable"
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
