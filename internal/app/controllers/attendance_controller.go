@@ -2,18 +2,15 @@ package controllers
 
 import (
 	"encoding/json"
-	"errors"
 	"io/ioutil"
 	"net/http"
 	"time"
 
-	"github.com/DevEdwinF/smartback.git/internal/app/models"
 	"github.com/DevEdwinF/smartback.git/internal/app/services"
 	"github.com/DevEdwinF/smartback.git/internal/config"
 	"github.com/DevEdwinF/smartback.git/internal/infrastructure/entity"
 	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
-	"gorm.io/gorm"
 )
 
 type AttendanceController struct {
@@ -157,34 +154,20 @@ func ValidateCollaboratorController(c echo.Context) error {
 	return c.JSON(http.StatusOK, collaborator)
 }
 
-func SaveTranslated(c echo.Context) error {
-	var translatedEntity entity.Translatedcollaborators
-	err := c.Bind(&translatedEntity)
+func (ac *AttendanceController) SaveTranslated(c echo.Context) error {
+	var translated entity.Translatedcollaborators
+	err := c.Bind(&translated)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	var collaborator models.Collaborators
-	err = config.DB.Model(&collaborator).Where("document = ?", translatedEntity.Document).First(&collaborator).Error
+	err = ac.Service.SaveTranslatedService(translated)
 	if err != nil {
-		if !errors.Is(err, gorm.ErrRecordNotFound) {
-			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
-		}
-		return echo.NewHTTPError(http.StatusNotFound, "Colaborador no encontrado")
-	}
-
-	newTranslatedCollaborator := models.Translatedcollaborators{
-		FkCollaboratorId: collaborator.Id,
-		CreatedAt:        time.Now(),
-	}
-
-	err = config.DB.Create(&newTranslatedCollaborator).Error
-	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 
 	return c.JSON(http.StatusOK, map[string]string{
-		"message": "Translado registrado con éxito",
+		"message": "Registro de asistencia guardado exitosamente",
 	})
 }
 

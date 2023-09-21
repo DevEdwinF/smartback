@@ -10,6 +10,7 @@ import (
 	"image/png"
 	"io/ioutil"
 	"log"
+	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
@@ -18,6 +19,7 @@ import (
 	"github.com/DevEdwinF/smartback.git/internal/app/models"
 	"github.com/DevEdwinF/smartback.git/internal/config"
 	"github.com/DevEdwinF/smartback.git/internal/infrastructure/entity"
+	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
 )
 
@@ -320,6 +322,36 @@ func (service *AttendanceService) GetAttendanceForLeaderToLate(leaderDocument st
 	}
 
 	return attendance, nil
+}
+
+func (service *AttendanceService) SaveTranslatedService(translatedEntity entity.Translatedcollaborators) error {
+	var collaborator models.Collaborators
+	err := config.DB.Model(&collaborator).Where("document = ?", translatedEntity.Document).First(&collaborator).Error
+	if err != nil {
+		if !errors.Is(err, gorm.ErrRecordNotFound) {
+			return err
+		}
+		return errors.New("Colaborador no encontrado")
+	}
+
+	loc, err := time.LoadLocation("America/Bogota")
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+
+	currentTime := time.Now().In(loc)
+
+	newTranslatedCollaborator := models.Translatedcollaborators{
+		FkCollaboratorId: collaborator.Id,
+		CreatedAt:        currentTime,
+	}
+
+	err = config.DB.Create(&newTranslatedCollaborator).Error
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // func (service *AttendanceService) GetAllAttendanceTest() ([]entity.UserAttendanceData, error) {
