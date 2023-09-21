@@ -212,6 +212,11 @@ func (service *AttendanceService) GetAttendanceForLeader(leaderDocument string) 
 
 	for i := range attendance {
 		photoName := attendance[i].Photo
+
+		if photoName == "" {
+			continue
+		}
+
 		imagePath := filepath.Join(folderPath, photoName)
 
 		imageData, err := ioutil.ReadFile(imagePath)
@@ -237,23 +242,6 @@ func (service *AttendanceService) GetAllAttendanceForToLate() ([]entity.UserAtte
 		Find(&attendance).Error
 	if err != nil {
 		return nil, err
-	}
-
-	folderPath := "attendance_photos"
-
-	for i := range attendance {
-		photoName := attendance[i].Photo
-		imagePath := filepath.Join(folderPath, photoName)
-
-		imageData, err := ioutil.ReadFile(imagePath)
-		if err != nil {
-			attendance[i].Photo = ""
-			continue
-		}
-
-		base64Image := base64.StdEncoding.EncodeToString(imageData)
-
-		attendance[i].Photo = base64Image
 	}
 
 	return attendance, nil
@@ -295,29 +283,13 @@ func (service *AttendanceService) GetAttendanceForLeaderToLate(leaderDocument st
 	attendance := []entity.UserAttendanceData{}
 	err := config.DB.Table("collaborators c").
 		Select("c.f_name, c.l_name, c.email, c.leader, c.document, a.*").
-		Joins("INNER JOIN users u ON u.document = c.leader").
+		Joins("INNER JOIN users u ON u.document = c.leader_document").
 		Joins("INNER JOIN attendances a ON c.id = a.fk_collaborator_id").
 		Where("u.document = ?", leaderDocument).
 		Where("EXISTS (SELECT 1 FROM attendances WHERE fk_collaborator_id = c.id AND late = TRUE HAVING COUNT(*) > 2)").
 		Find(&attendance).Error
 	if err != nil {
 		return nil, err
-	}
-
-	folderPath := "attendance_photos"
-
-	for i := range attendance {
-		photoName := attendance[i].Photo
-		imagePath := filepath.Join(folderPath, photoName)
-
-		imageData, err := ioutil.ReadFile(imagePath)
-		if err != nil {
-			return nil, err
-		}
-
-		base64Image := base64.StdEncoding.EncodeToString(imageData)
-
-		attendance[i].Photo = base64Image
 	}
 
 	return attendance, nil
