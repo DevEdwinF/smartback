@@ -175,6 +175,11 @@ func (service *AttendanceService) GetAllAttendance() ([]entity.UserAttendanceDat
 
 	for i := range attendance {
 		photoName := attendance[i].Photo
+
+		if photoName == "" {
+			continue
+		}
+
 		imagePath := filepath.Join(folderPath, photoName)
 
 		imageData, err := ioutil.ReadFile(imagePath)
