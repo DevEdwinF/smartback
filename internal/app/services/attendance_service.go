@@ -241,7 +241,8 @@ func (service *AttendanceService) GetAllAttendanceForToLate() ([]entity.UserAtte
 
 		imageData, err := ioutil.ReadFile(imagePath)
 		if err != nil {
-			return nil, err
+			attendance[i].Photo = ""
+			continue
 		}
 
 		base64Image := base64.StdEncoding.EncodeToString(imageData)
