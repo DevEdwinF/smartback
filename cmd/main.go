@@ -8,14 +8,14 @@ import (
 )
 
 func main() {
-	services.RunCronJob()
+	go services.RunCronJob()
+
 	config.ConnectDB()
 	config.KactusDB()
+
 	e := echo.New()
 
 	router.GlobalRouter(e)
 
 	e.Logger.Fatal(e.Start(":8080"))
-	//testint
-	//testing2
 }
