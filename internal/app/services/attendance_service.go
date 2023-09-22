@@ -213,9 +213,9 @@ func (service *AttendanceService) GetAttendanceForLeader(leaderDocument string) 
 	for i := range attendance {
 		photoName := attendance[i].Photo
 
-		if photoName == "" {
-			continue
-		}
+		// if photoName == "" {
+		// 	continue
+		// }
 
 		imagePath := filepath.Join(folderPath, photoName)
 
