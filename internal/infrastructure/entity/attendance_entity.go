@@ -44,9 +44,9 @@ type ValidateSchedule struct {
 }
 
 type Translatedcollaborators struct {
-	FkCollaboratorId int       `json:"id"`
-	Document         string    `json:"document"`
-	FName            string    `json:"f_name"`
-	LName            string    `json:"l_name"`
-	CreatedAt        time.Time `json:"date"`
+	FkCollaboratorId int    `json:"id"`
+	Document         string `json:"document"`
+	FName            string `json:"f_name"`
+	LName            string `json:"l_name"`
+	CreatedAt        string `json:"date"`
 }
