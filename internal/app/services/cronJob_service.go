@@ -14,18 +14,18 @@ func RunCronJob() {
 	c := cron.New()
 
 	// c.AddFunc("0 */30 * * * *", func() {
-	c.AddFunc("*/5 * * * *", func() {
-		err := SyncData()
-		if err != nil {
-			log.Println("Error al sincronizar datos:", err)
-		}
-	})
-	// c.AddFunc("0 0 22 * * *", func() {
+	// c.AddFunc("*/5 * * * *", func() {
 	// 	err := SyncData()
 	// 	if err != nil {
 	// 		log.Println("Error al sincronizar datos:", err)
 	// 	}
 	// })
+	c.AddFunc("0 0 22 * * *", func() {
+		err := SyncData()
+		if err != nil {
+			log.Println("Error al sincronizar datos:", err)
+		}
+	})
 
 	c.Start()
 
