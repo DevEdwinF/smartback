@@ -66,7 +66,7 @@ func GetAllTranslatedService() ([]entity.Translatedcollaborators, error) {
 
 	err := config.DB.
 		Table("translatedcollaborators t").
-		Select("t.*, c.*").
+		Select("t.*, c.f_name, c.l_name").
 		Joins("INNER JOIN collaborators c ON t.fk_collaborator_id = c.id").
 		Scan(&translatedcollaborators).Error
 	if err != nil {
