@@ -4,3 +4,4 @@ ADD . /app
 WORKDIR /app
 RUN go mod download && go build -o main ./main.go
 CMD /app/main
+
