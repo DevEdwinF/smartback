@@ -178,9 +178,9 @@ func (service *AttendanceService) GetAllAttendance() ([]entity.UserAttendanceDat
 	for i := range attendance {
 		photoName := attendance[i].Photo
 
-		if photoName == "" {
-			continue
-		}
+		// if photoName == "" {
+		// 	continue
+		// }
 
 		imagePath := filepath.Join(folderPath, photoName)
 
@@ -213,9 +213,9 @@ func (service *AttendanceService) GetAttendanceForLeader(leaderDocument string) 
 	for i := range attendance {
 		photoName := attendance[i].Photo
 
-		if photoName == "" {
-			continue
-		}
+		// if photoName == "" {
+		// 	continue
+		// }
 
 		imagePath := filepath.Join(folderPath, photoName)
 
@@ -324,32 +324,3 @@ func (service *AttendanceService) SaveTranslatedService(translatedEntity entity.
 
 	return nil
 }
-
-// func (service *AttendanceService) GetAllAttendanceTest() ([]entity.UserAttendanceData, error) {
-// 	attendance := []entity.UserAttendanceData{}
-// 	err := config.DB.Table("attendances a").
-// 		Select("c.f_name, c.l_name, c.email, c.document, a.*").
-// 		Joins("INNER JOIN collaborators c on c.id = a.fk_collaborator_id").
-// 		Find(&attendance).Error
-// 	if err != nil {
-// 		return nil, err
-// 	}
-
-// 	folderPath := "attendance_photos"
-
-// 	for i := range attendance {
-// 		photoName := attendance[i].Photo
-// 		imagePath := filepath.Join(folderPath, photoName)
-
-// 		imageData, err := ioutil.ReadFile(imagePath)
-// 		if err != nil {
-// 			return nil, err
-// 		}
-
-// 		base64Image := base64.StdEncoding.EncodeToString(imageData)
-
-// 		attendance[i].Photo = base64Image
-// 	}
-
-// 	return attendance, nil
-// }
