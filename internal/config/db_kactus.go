@@ -13,11 +13,11 @@ import (
 var KDB *gorm.DB
 
 func KactusDB() {
-	// loadEnvKactus()
+	loadEnvKactus()
 
-	// dsn := buildDSNKactus()
+	dsn := buildDSNKactus()
 
-	dsn := "sqlserver://ASISTENCIA:*T3cn0l0g14-*@10.100.0.18:1433?database=KACTUS"
+	// dsn := "sqlserver://ASISTENCIA:*T3cn0l0g14-*@10.100.0.18:1433?database=KACTUS"
 
 	db, err := gorm.Open(sqlserver.Open(dsn), &gorm.Config{})
 	if err != nil {

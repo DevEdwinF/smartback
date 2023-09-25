@@ -13,13 +13,11 @@ import (
 var DB *gorm.DB
 
 func ConnectDB() {
-	// loadEnv()
+	loadEnv()
 
-	// dsn := buildDSN()
+	dsn := buildDSN()
 
-	// dsn := "host=host.docker.internal user=asistencias password=*T3cn0l0g14* dbname=asistenciasdb port=5432 sslmode=disable"
-
-	dsn := "host=129.213.83.40 user=asistencias password=Smart2023*++ dbname=asistencias port=5432 sslmode=disable"
+	// dsn := "host=129.213.83.40 user=asistencias password=Smart2023*++ dbname=asistencias port=5432 sslmode=disable"
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
