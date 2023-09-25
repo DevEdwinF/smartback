@@ -35,7 +35,8 @@ func loadEnv() {
 }
 
 func buildDSN() string {
-	dbHost := os.Getenv("DB_HOST")
+	dbHost := "host.docker.internal"
+	// dbHost := os.Getenv("DB_HOST")
 	dbUser := os.Getenv("DB_USER")
 	dbPassword := os.Getenv("DB_PASSWORD")
 	dbName := os.Getenv("DB_NAME")
