@@ -13,11 +13,9 @@ import (
 var DB *gorm.DB
 
 func ConnectDB() {
-	// loadEnv()
+	loadEnv()
 
-	// dsn := buildDSN()
-
-	dsn := "host=localhost user=asistencias password=*T3cn0l0g14* dbname=asistenciasdb port=5432 sslmode=disable"
+	dsn := buildDSN()
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
