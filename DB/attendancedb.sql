@@ -10,6 +10,7 @@ create table
         state VARCHAR(10) not null,
         leader varchar(50) not null,
         leader_document VARCHAR(20),  
+        process VARCHAR(50),
         subprocess VARCHAR(50),
         headquarters VARCHAR(30),
         created_at timestamp
@@ -32,25 +33,6 @@ ADD
 ADD
     CONSTRAINT fk_collaborator_id FOREIGN KEY (fk_collaborator_id) REFERENCES collaborators (id);
 
-INSERT INTO
-    "collaborators" (
-        "id",
-        "document",
-        "f_name",
-        "l_name",
-        "email",
-        "position",
-        "leader"
-    )
-VALUES (
-        1,
-        '1032500648',
-        'Edwin Fernando',
-        'Pirajan Arevalo',
-        'epiraja@smart.edu.co',
-        'Desarrollador de software',
-        'Jorge Celemin'
-    );
 
 create table
     schedules(
@@ -65,18 +47,6 @@ add
     column fk_collaborator_id integer,
 ADD
     CONSTRAINT fk_collaborator_id FOREIGN KEY (fk_collaborator_id) REFERENCES collaborators(id);
-
-INSERT INTO
-    "schedules" (
-        "day",
-        "arrival_time",
-        "departure_time"
-    )
-VALUES (
-        'Monday',
-        '07:00:00',
-        '17:00:00'
-    );
 
 create table
     TranslatedCollaborators (
