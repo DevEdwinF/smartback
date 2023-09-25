@@ -9,6 +9,7 @@ import (
 
 func main() {
 	go services.RunCronJob()
+	//server
 
 	config.ConnectDB()
 	config.KactusDB()
