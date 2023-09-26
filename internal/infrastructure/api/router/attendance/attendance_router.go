@@ -19,7 +19,7 @@ func AttendanceRoutes(e *echo.Echo) {
 	group.GET("/late/all", attendanceController.GetAllAttendanceForLate, middleware.AuthToken)
 	group.GET("/leader/all", attendanceController.GetAttendanceForLeader, middleware.AuthToken)
 	group.GET("/leader/late/all", attendanceController.GetAttendanceForLeaderToLate, middleware.AuthToken)
-	group.GET("/late/all", attendanceController.GetAllAttendanceForLate)
-	group.POST("/register/translated", attendanceController.SaveTranslated)
+	group.GET("/late/all", attendanceController.GetAllAttendanceForLate, middleware.AuthToken)
+	group.POST("/register/translated", attendanceController.SaveTranslated, middleware.AuthToken)
 	group.GET("/all/translated", controllers.GetAllTranslatedController, middleware.AuthToken)
 }
