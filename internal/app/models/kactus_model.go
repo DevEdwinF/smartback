@@ -11,7 +11,7 @@ type NmContr struct {
 	EMail          string
 	FnLeader       string
 	LnLeader       string
-	LeaderDocument string
+	LeaderDocument int
 	Subprocess     string
 	Headquarters   string
 }

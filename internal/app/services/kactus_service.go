@@ -9,14 +9,14 @@ func GetAllColab() ([]models.NmContr, error) {
 	collaborators := []models.NmContr{}
 	err := config.KDB.Table("NM_CONTR").
 		Select(`
-            bi_emple.cod_inte AS document,
+            bi_emple.cod_empl AS document,
             bi_emple.nom_empl AS f_name,
             bi_emple.ape_empl AS l_name,
             BI_CARGO.nom_carg AS position,
             NM_CONTR.fec_ingr AS date,
             bi_emple.box_mail AS b_mail,
             bi_emple.eee_mail AS e_mail,
-            NomJefe.cod_inte AS "leader_document",
+            NomJefe.code_empl AS "leader_document",
             NomJefe.nom_empl AS fn_leader,
             NomJefe.ape_empl AS ln_leader,
             gc.nom_ccos AS subprocess,

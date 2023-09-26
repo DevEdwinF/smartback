@@ -2,6 +2,7 @@ package services
 
 import (
 	"log"
+	"strconv"
 	"time"
 
 	"github.com/DevEdwinF/smartback.git/internal/app/models"
@@ -66,6 +67,7 @@ func syncCollaborators(sourceCollaborators []models.NmContr, destinationCollabor
 		}
 
 		if !found {
+			leaderDocumentStr := strconv.Itoa(sourceCollaborator.LeaderDocument)
 
 			newCollaborator := entity.Collaborators{
 				Document:       sourceCollaborator.Document,
@@ -76,7 +78,7 @@ func syncCollaborators(sourceCollaborators []models.NmContr, destinationCollabor
 				Bmail:          sourceCollaborator.BMail,
 				State:          sourceCollaborator.State,
 				Leader:         sourceCollaborator.FnLeader + " " + sourceCollaborator.LnLeader,
-				LeaderDocument: sourceCollaborator.LeaderDocument,
+				LeaderDocument: leaderDocumentStr, // Asignar la versión en string de LeaderDocument
 				Subprocess:     sourceCollaborator.Subprocess,
 				Headquarters:   sourceCollaborator.Headquarters,
 				CreatedAt:      time.Now(),
