@@ -83,7 +83,8 @@ func (s *AttendanceService) RegisterAttendance(attendance entity.AttendanceEntit
 	folderPath := "attendance_photos"
 	err = os.MkdirAll(folderPath, 0755)
 	if err != nil {
-		log.Fatal(err)
+		log.Println("Error creating directory:", err)
+		return err
 	}
 
 	imagenCodificadaEnBase64 := attendance.Photo
@@ -96,27 +97,32 @@ func (s *AttendanceService) RegisterAttendance(attendance entity.AttendanceEntit
 
 	decodificado, err := base64.StdEncoding.DecodeString(imagenCodificadaEnBase64)
 	if err != nil {
-		log.Fatal(err)
+		log.Println("Error decoding base64 image:", err)
+		return err
 	}
 
 	imagen, _, err := image.Decode(bytes.NewReader(decodificado))
 	if err != nil {
-		log.Fatal(err)
+		log.Println("Error saving image:", err)
+		return err
 	}
 
 	photoName := fmt.Sprintf("%s%d.png", "1150856537", time.Now().Unix())
 
 	archivo, err := os.Create(fmt.Sprintf("%s/%s", folderPath, photoName))
 	if err != nil {
-		log.Fatal(err)
+		log.Println("Error al crear el archivos:", err)
+		return err
 	}
 	err = png.Encode(archivo, imagen)
 	if err != nil {
-		log.Fatal(err)
+		log.Println("Error:", err)
+		return err
 	}
 	err = archivo.Close()
 	if err != nil {
-		log.Fatal(err)
+		log.Println("Error al cerrar el archivo:", err)
+		return err
 	}
 
 	attendance.Photo = photoName
