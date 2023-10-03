@@ -2,7 +2,6 @@ package services
 
 import (
 	"errors"
-	"fmt"
 
 	"github.com/DevEdwinF/smartback.git/internal/app/models"
 	"github.com/DevEdwinF/smartback.git/internal/config"
@@ -49,14 +48,14 @@ func GetCollaboratorForLeader(leaderDocument string) ([]entity.Collaborators, er
 	return collaboratorWithSchedule, nil
 }
 
-func ValidateCollaboratorService(document string) (*models.Collaborators, error) {
+func GetCollaborator(document string) (*models.Collaborators, error) {
 	var collaborator models.Collaborators
-	err := config.DB.Model(&collaborator).Where("document = ?", document).First(&collaborator).Error
+	err := config.DB.Model(&models.Collaborators{}).Where("document = ?", document).First(&collaborator).Error
 	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, fmt.Errorf("Colaborador no encontrado")
+		if !errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, err
 		}
-		return nil, err
+		return nil, errors.New("Colaborador no encontrado")
 	}
 	return &collaborator, nil
 }

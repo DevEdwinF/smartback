@@ -146,9 +146,9 @@ func ValidateSchedule(c echo.Context) error {
 func ValidateCollaboratorController(c echo.Context) error {
 	document := c.Param("doc")
 
-	collaborator, err := services.ValidateCollaboratorService(document)
+	collaborator, err := services.GetCollaborator(document)
 	if err != nil {
-		return echo.NewHTTPError(http.StatusNotFound, err.Error())
+		return err
 	}
 
 	return c.JSON(http.StatusOK, collaborator)

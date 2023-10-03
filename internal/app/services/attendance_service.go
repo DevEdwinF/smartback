@@ -29,17 +29,53 @@ func NewAttendanceService() *AttendanceService {
 	return &AttendanceService{}
 }
 
-func (s *AttendanceService) RegisterAttendance(attendance entity.AttendanceEntity) error {
-	var collaborator models.Collaborators
-	err := config.DB.Model(&collaborator).Where("document = ?", attendance.Document).First(&collaborator).Error
+func (s *AttendanceService) GetUnregisteredForDay(attendance entity.AttendanceEntity, day time.Time) ([]entity.Collaborators, error) {
+	allCollaborators, err := GetAllCollaborators()
 	if err != nil {
-		if !errors.Is(err, gorm.ErrRecordNotFound) {
-			return err
-		}
-		return errors.New("Colaborador no encontrado")
+		return nil, err
 	}
 
+	attendanceForDay, err := GetAttendanceForDay(day)
+	if err != nil {
+		return nil, err
+	}
+
+	attendanceMap := make(map[string]bool)
+	for _, attendance := range attendanceForDay {
+		attendanceMap[attendance.Document] = true
+	}
+
+	unregisteredCollaborators := []entity.Collaborators{}
+	for _, collaborator := range allCollaborators {
+		if _, ok := attendanceMap[collaborator.Document]; !ok {
+			unregisteredCollaborators = append(unregisteredCollaborators, collaborator)
+		}
+	}
+
+	return unregisteredCollaborators, nil
+}
+
+func GetAttendanceForDay(day time.Time) ([]entity.AttendanceEntity, error) {
+	attendanceForDay := []entity.AttendanceEntity{}
+
+	if err := config.DB.Where("DATE(created_at) = ?", day.Format("2006-01-02")).Find(&attendanceForDay).Error; err != nil {
+		return nil, err
+	}
+
+	return attendanceForDay, nil
+}
+
+func (s *AttendanceService) RegisterAttendance(attendance entity.AttendanceEntity) error {
+	collaborator, err := GetCollaborator(attendance.Document)
+	if err != nil {
+		return err
+	}
+
+	if collaborator == nil {
+		return errors.New("Colaborador no encontrado")
+	}
 	loc, err := time.LoadLocation("America/Bogota")
+
 	if err != nil {
 		return err
 	}
