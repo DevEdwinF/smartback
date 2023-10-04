@@ -23,7 +23,6 @@ func GetAllCollaborators() ([]entity.Collaborators, error) {
 	if err := config.DB.Table("collaborators").
 		Select("*").
 		Order("id DESC").
-		// Limit(500).
 		Scan(&collaboratorWithSchedule).
 		Error; err != nil {
 		return nil, err

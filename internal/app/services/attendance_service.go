@@ -74,6 +74,7 @@ func (s *AttendanceService) RegisterAttendance(attendance entity.AttendanceEntit
 	if collaborator == nil {
 		return errors.New("Colaborador no encontrado")
 	}
+
 	loc, err := time.LoadLocation("America/Bogota")
 
 	if err != nil {
@@ -101,7 +102,7 @@ func (s *AttendanceService) RegisterAttendance(attendance entity.AttendanceEntit
 
 	late := false
 
-	if !arrivalScheduled.IsZero() && timeNow.After(arrivalScheduled.Add(5*time.Minute)) {
+	if !arrivalScheduled.IsZero() && timeNow.After(arrivalScheduled.Add(6*time.Minute)) {
 		late = true
 	}
 
@@ -116,7 +117,7 @@ func (s *AttendanceService) RegisterAttendance(attendance entity.AttendanceEntit
 		}
 	}
 
-	folderPath := "attendance_photos"
+	folderPath := "/app/attendance_photos"
 	err = os.MkdirAll(folderPath, 0755)
 	if err != nil {
 		log.Println("Error creating directory:", err)
@@ -205,17 +206,21 @@ func (s *AttendanceService) RegisterAttendance(attendance entity.AttendanceEntit
 	return errors.New("Estado inválido")
 }
 
-func (service *AttendanceService) GetAllAttendance() ([]entity.UserAttendanceData, error) {
+func (service *AttendanceService) GetAttendancePage(page, pageSize int) ([]entity.UserAttendanceData, error) {
+	offset := (page - 1) * pageSize
+
 	attendance := []entity.UserAttendanceData{}
 	err := config.DB.Table("attendances a").
 		Select("c.f_name, c.l_name, c.email, c.document, a.*").
 		Joins("INNER JOIN collaborators c on c.id = a.fk_collaborator_id").
+		Offset(offset).Limit(pageSize).
 		Find(&attendance).Error
+
 	if err != nil {
 		return nil, err
 	}
 
-	folderPath := "attendance_photos"
+	folderPath := "/app/attendance_photos"
 
 	for i := range attendance {
 		photoName := attendance[i].Photo
@@ -250,7 +255,7 @@ func (service *AttendanceService) GetAttendanceForLeader(leaderDocument string) 
 		return nil, err
 	}
 
-	folderPath := "attendance_photos"
+	folderPath := "/app/attendance_photos"
 
 	for i := range attendance {
 		photoName := attendance[i].Photo

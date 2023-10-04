@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/DevEdwinF/smartback.git/internal/app/services"
@@ -41,13 +42,23 @@ func (ac *AttendanceController) SaveRegisterAttendance(c echo.Context) error {
 }
 
 func (controller *AttendanceController) GetAllAttendance(c echo.Context) error {
-	attendance, err := controller.Service.GetAllAttendance()
+	page, err := strconv.Atoi(c.QueryParam("page"))
+	if err != nil {
+	}
+
+	pageSize, err := strconv.Atoi(c.QueryParam("pageSize"))
+	if err != nil {
+		pageSize = 50
+	}
+
+	attendance, err := controller.Service.GetAttendancePage(page, pageSize)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 
 	return c.JSON(http.StatusOK, attendance)
 }
+
 func (controller *AttendanceController) GetAllAttendanceForLate(c echo.Context) error {
 	attendance, err := controller.Service.GetAllAttendanceForToLate()
 	if err != nil {
