@@ -48,7 +48,7 @@ func (controller *AttendanceController) GetAllAttendance(c echo.Context) error {
 
 	pageSize, err := strconv.Atoi(c.QueryParam("pageSize"))
 	if err != nil {
-		pageSize = 50
+		pageSize = 100
 	}
 
 	attendance, err := controller.Service.GetAttendancePage(page, pageSize)

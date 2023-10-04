@@ -5,7 +5,7 @@ import (
 	"github.com/DevEdwinF/smartback.git/internal/config"
 )
 
-func GetAllColab() ([]models.NmContr, error) {
+func GetAllCollaboratorsForKactus() ([]models.NmContr, error) {
 	collaborators := []models.NmContr{}
 	err := config.KDB.Table("NM_CONTR").
 		Select(`

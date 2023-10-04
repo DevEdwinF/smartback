@@ -17,12 +17,28 @@ func NewCollaboratorService(db *gorm.DB) *CollaboratorService {
 	return &CollaboratorService{db: db}
 }
 
-func GetAllCollaborators() ([]entity.Collaborators, error) {
+func ValidateCollaborator() ([]entity.Collaborators, error) {
+	collaboratorWithSchedule := []entity.Collaborators{}
+
+	if err := config.DB.Table("collaborators").
+		Select("document").
+		Order("id DESC").
+		Scan(&collaboratorWithSchedule).
+		Error; err != nil {
+		return nil, err
+	}
+
+	return collaboratorWithSchedule, nil
+}
+
+func GetCollaboratorPage(page, pageSize int) ([]entity.Collaborators, error) {
+	offset := (page - 1) * pageSize
 	collaboratorWithSchedule := []entity.Collaborators{}
 
 	if err := config.DB.Table("collaborators").
 		Select("*").
 		Order("id DESC").
+		Offset(offset).Limit(pageSize).
 		Scan(&collaboratorWithSchedule).
 		Error; err != nil {
 		return nil, err

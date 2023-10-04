@@ -34,12 +34,12 @@ func RunCronJob() {
 }
 
 func SyncData() error {
-	sourceCollaborators, err := GetAllColab()
+	sourceCollaborators, err := GetAllCollaboratorsForKactus()
 	if err != nil {
 		return err
 	}
 
-	destinationCollaborators, err := GetAllCollaborators()
+	destinationCollaborators, err := ValidateCollaborator()
 	if err != nil {
 		return err
 	}
@@ -60,7 +60,6 @@ func syncCollaborators(sourceCollaborators []models.NmContr, destinationCollabor
 			if sourceCollaborator.Document == destinationCollaborator.Document {
 				found = true
 
-				// Actualizar el colaborador en la base de datos destino
 				destinationCollaborators[i].FName = sourceCollaborator.FName
 				destinationCollaborators[i].LName = sourceCollaborator.LName
 				destinationCollaborators[i].Position = sourceCollaborator.Position

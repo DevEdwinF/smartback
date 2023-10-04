@@ -30,7 +30,7 @@ func NewAttendanceService() *AttendanceService {
 }
 
 func (s *AttendanceService) GetUnregisteredForDay(attendance entity.AttendanceEntity, day time.Time) ([]entity.Collaborators, error) {
-	allCollaborators, err := GetAllCollaborators()
+	allCollaborators, err := ValidateCollaborator()
 	if err != nil {
 		return nil, err
 	}
@@ -214,7 +214,7 @@ func (service *AttendanceService) GetAttendancePage(page, pageSize int) ([]entit
 		Select("c.f_name, c.l_name, c.email, c.document, a.*").
 		Joins("INNER JOIN collaborators c on c.id = a.fk_collaborator_id").
 		Offset(offset).Limit(pageSize).
-		Find(&attendance).Error
+		Scan(&attendance).Error
 
 	if err != nil {
 		return nil, err
