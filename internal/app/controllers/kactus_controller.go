@@ -15,7 +15,7 @@ func GetAllColab(c echo.Context) error {
 	return c.JSON(http.StatusOK, collaborators)
 }
 
-func GetColab(c echo.Context) error {
+func GetCollab(c echo.Context) error {
 	document := c.Param("document")
 
 	collaborator, err := services.GetColabById(document)

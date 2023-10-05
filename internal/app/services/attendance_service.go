@@ -244,12 +244,14 @@ func (service *AttendanceService) GetAttendancePage(page, pageSize int) ([]entit
 	return attendance, nil
 }
 
-func (service *AttendanceService) GetAttendanceForLeader(leaderDocument string) ([]entity.UserAttendanceData, error) {
+func (service *AttendanceService) GetAttendanceForLeaderPage(page, pageSize int, leaderDocument string) ([]entity.UserAttendanceData, error) {
+	offset := (page - 1) * pageSize
 	attendance := []entity.UserAttendanceData{}
 	err := config.DB.Table("attendances a").
 		Select("c.f_name, c.l_name, c.email, c.leader, c.document, a.*").
 		Joins("INNER JOIN collaborators c ON c.id = a.fk_collaborator_id").
 		Where("c.leader_document = ?", leaderDocument).
+		Offset(offset).Limit(pageSize).
 		Find(&attendance).Error
 	if err != nil {
 		return nil, err
@@ -285,6 +287,7 @@ func (service *AttendanceService) GetAllAttendanceForToLate() ([]entity.UserAtte
 	err := config.DB.Table("collaborators c").
 		Select("c.f_name, c.l_name, c.email, c.leader, c.document, a.*").
 		Joins("INNER JOIN attendances a ON c.id = a.fk_collaborator_id").
+		Where("a.late = TRUE").
 		Where("EXISTS (SELECT 1 FROM attendances WHERE fk_collaborator_id = c.id AND late = TRUE HAVING COUNT(*) > 2)").
 		Find(&attendance).Error
 	if err != nil {
@@ -333,6 +336,7 @@ func (service *AttendanceService) GetAttendanceForLeaderToLate(leaderDocument st
 		Joins("INNER JOIN users u ON u.document = c.leader_document").
 		Joins("INNER JOIN attendances a ON c.id = a.fk_collaborator_id").
 		Where("u.document = ?", leaderDocument).
+		Where("a.late = TRUE").
 		Where("EXISTS (SELECT 1 FROM attendances WHERE fk_collaborator_id = c.id AND late = TRUE HAVING COUNT(*) > 2)").
 		Find(&attendance).Error
 	if err != nil {

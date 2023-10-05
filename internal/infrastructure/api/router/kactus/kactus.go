@@ -10,5 +10,5 @@ func KactusRouter(e *echo.Echo) {
 	group := e.Group("/api/kactus")
 
 	group.GET("/collaborators/all", controllers.GetAllColab)
-	group.GET("/collaborators/:document", controllers.GetColab)
+	group.GET("/collaborators/:document", controllers.GetCollab)
 }

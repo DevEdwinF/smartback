@@ -21,7 +21,7 @@ func GetAllCollaboratorsController(c echo.Context) error {
 
 	pageSize, err := strconv.Atoi(c.QueryParam("pageSize"))
 	if err != nil {
-		pageSize = 100
+		pageSize = 200
 	}
 
 	collaborators, err := services.GetCollaboratorPage(page, pageSize)
