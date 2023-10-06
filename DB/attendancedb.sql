@@ -23,6 +23,7 @@ create table
         departure time,
         location varchar(10),
         late BOOLEAN,
+        early_arrival BOOLEAN,
         photo_arrival bytea,
         photo_departure bytea,
         created_at timestamp

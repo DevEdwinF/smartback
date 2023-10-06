@@ -2,7 +2,7 @@ package models
 
 import "time"
 
-type Collaborators struct {
+/* type Collaborators struct {
 	Id             int
 	Document       string
 	FName          string
@@ -15,6 +15,22 @@ type Collaborators struct {
 	Subprocess     string
 	Headquarters   string
 	Position       string
+	CreatedAt      time.Time
+} */
+
+type Collaborators struct {
+	Id             int    `gorm:"column:id"`
+	Document       string `gorm:"column:document"`
+	FName          string `gorm:"column:f_name"`
+	LName          string `gorm:"column:l_name"`
+	Email          string `gorm:"column:email"`
+	Bmail          string `gorm:"column:bmail"`
+	State          string `gorm:"column:state"`
+	Leader         string `gorm:"column:leader"`
+	LeaderDocument string `gorm:"column:leader_document"`
+	Subprocess     string `gorm:"column:subprocess"`
+	Headquarters   string `gorm:"column:headquarters"`
+	Position       string `gorm:"column:position"`
 	CreatedAt      time.Time
 }
 

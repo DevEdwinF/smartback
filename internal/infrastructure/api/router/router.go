@@ -4,6 +4,7 @@ import (
 	attendance "github.com/DevEdwinF/smartback.git/internal/infrastructure/api/router/attendance"
 	"github.com/DevEdwinF/smartback.git/internal/infrastructure/api/router/auth"
 	collaborator "github.com/DevEdwinF/smartback.git/internal/infrastructure/api/router/collaborator"
+	"github.com/DevEdwinF/smartback.git/internal/infrastructure/api/router/filter"
 	"github.com/DevEdwinF/smartback.git/internal/infrastructure/api/router/kactus"
 	"github.com/DevEdwinF/smartback.git/internal/infrastructure/api/router/payroll"
 	"github.com/DevEdwinF/smartback.git/internal/infrastructure/api/router/roles"
@@ -34,5 +35,6 @@ func GlobalRouter(e *echo.Echo) {
 	user.UserRoutes(e)
 	roles.RolesRoutes(e)
 	payroll.PayrollRouter(e)
+	filter.FilterRoutes(e)
 
 }
