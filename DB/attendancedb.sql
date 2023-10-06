@@ -23,7 +23,8 @@ create table
         departure time,
         location varchar(10),
         late BOOLEAN,
-        photo bytea,
+        photo_arrival bytea,
+        photo_departure bytea,
         created_at timestamp
     )
 
@@ -91,7 +92,7 @@ VALUES (
         'Pirajan Arevalo',
         'epirajan@smart.edu.co',
         1,
-        '123456'
+        'Smart2023++'
     );
 
 CREATE TABLE headquarters (

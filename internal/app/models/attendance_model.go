@@ -12,7 +12,9 @@ type Attendance struct {
 	Arrival          sql.NullString
 	Departure        sql.NullString
 	Late             bool
-	Photo            string
+	PhotoArrival     string
+	PhotoDeparture   string
+	EarlyDeparture   bool
 	CreatedAt        time.Time
 }
 type Translatedcollaborators struct {

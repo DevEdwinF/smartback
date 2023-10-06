@@ -106,6 +106,22 @@ func (s *AttendanceService) RegisterAttendance(attendance entity.AttendanceEntit
 		late = true
 	}
 
+	var departureScheduled time.Time
+
+	if schedule.DepartureTime != "" {
+		temp, err := time.Parse("15:04:05", schedule.DepartureTime)
+		if err != nil {
+			return err
+		}
+		departureScheduled = time.Date(timeNow.Year(), timeNow.Month(), timeNow.Day(), temp.Hour(), temp.Minute(), temp.Second(), temp.Nanosecond(), timeNow.Location())
+	}
+
+	earlyDeparture := false
+
+	if !departureScheduled.IsZero() && timeNow.After(departureScheduled) {
+		earlyDeparture = true
+	}
+
 	var validateAttendance models.Attendance
 	err = config.DB.Model(&validateAttendance).
 		Where("fk_collaborator_id = ? AND date(created_at) = ?", collaborator.Id, timeNow.Format("2006-01-02")).
@@ -117,7 +133,8 @@ func (s *AttendanceService) RegisterAttendance(attendance entity.AttendanceEntit
 		}
 	}
 
-	folderPath := "/app/attendance_photos"
+	/* folderPath := "/app/attendance_photos" */
+	folderPath := "attendance_photos"
 	err = os.MkdirAll(folderPath, 0755)
 	if err != nil {
 		log.Println("Error creating directory:", err)
@@ -172,10 +189,11 @@ func (s *AttendanceService) RegisterAttendance(attendance entity.AttendanceEntit
 
 		modelsAttendance := models.Attendance{
 			FkCollaboratorID: collaborator.Id,
-			Photo:            attendance.Photo,
+			PhotoArrival:     attendance.Photo,
 			Location:         attendance.Location,
 			Arrival:          sql.NullString{String: timeNow.Format("15:04:05"), Valid: true},
 			Late:             late,
+			EarlyDeparture:   earlyDeparture,
 			CreatedAt:        timeNow,
 		}
 		err = config.DB.Create(&modelsAttendance).Error
@@ -194,7 +212,7 @@ func (s *AttendanceService) RegisterAttendance(attendance entity.AttendanceEntit
 		}
 
 		validateAttendance.Departure = sql.NullString{String: timeNow.Format("15:04:05"), Valid: true}
-
+		validateAttendance.PhotoDeparture = attendance.Photo
 		err = config.DB.Updates(&validateAttendance).Error
 		if err != nil {
 			return err
@@ -220,25 +238,26 @@ func (service *AttendanceService) GetAttendancePage(page, pageSize int) ([]entit
 		return nil, err
 	}
 
-	folderPath := "/app/attendance_photos"
+	folderPath := "attendance_photos"
 
 	for i := range attendance {
-		photoName := attendance[i].Photo
+		photoArrivalName := attendance[i].PhotoArrival
+		photoArrivalPath := filepath.Join(folderPath, photoArrivalName)
 
-		// if photoName == "" {
-		// 	continue
-		// }
-
-		imagePath := filepath.Join(folderPath, photoName)
-
-		imageData, err := ioutil.ReadFile(imagePath)
-		if err != nil {
-			attendance[i].Photo = ""
-			continue
+		imageArrivalData, err := ioutil.ReadFile(photoArrivalPath)
+		if err == nil {
+			base64ImageArrival := base64.StdEncoding.EncodeToString(imageArrivalData)
+			attendance[i].PhotoArrival = base64ImageArrival
 		}
 
-		base64Image := base64.StdEncoding.EncodeToString(imageData)
-		attendance[i].Photo = base64Image
+		photoDepartureName := attendance[i].PhotoDeparture
+		photoDeparturePath := filepath.Join(folderPath, photoDepartureName)
+
+		imageDepartureData, err := ioutil.ReadFile(photoDeparturePath)
+		if err == nil {
+			base64ImageDeparture := base64.StdEncoding.EncodeToString(imageDepartureData)
+			attendance[i].PhotoDeparture = base64ImageDeparture
+		}
 	}
 
 	return attendance, nil
@@ -257,10 +276,10 @@ func (service *AttendanceService) GetAttendanceForLeaderPage(page, pageSize int,
 		return nil, err
 	}
 
-	folderPath := "/app/attendance_photos"
+	folderPath := "attendance_photos"
 
 	for i := range attendance {
-		photoName := attendance[i].Photo
+		photoName := attendance[i].PhotoArrival
 
 		// if photoName == "" {
 		// 	continue
@@ -270,13 +289,13 @@ func (service *AttendanceService) GetAttendanceForLeaderPage(page, pageSize int,
 
 		imageData, err := ioutil.ReadFile(imagePath)
 		if err != nil {
-			attendance[i].Photo = ""
+			attendance[i].PhotoArrival = ""
 			continue
 		}
 
 		base64Image := base64.StdEncoding.EncodeToString(imageData)
 
-		attendance[i].Photo = base64Image
+		attendance[i].PhotoArrival = base64Image
 	}
 
 	return attendance, nil
