@@ -265,6 +265,7 @@ func (service *AttendanceService) GetAttendancePage(page, pageSize int) ([]entit
 
 func (service *AttendanceService) GetAttendanceForLeaderPage(page, pageSize int, leaderDocument string) ([]entity.UserAttendanceData, error) {
 	offset := (page - 1) * pageSize
+
 	attendance := []entity.UserAttendanceData{}
 	err := config.DB.Table("attendances a").
 		Select("c.f_name, c.l_name, c.email, c.leader, c.document, a.*").
@@ -272,6 +273,7 @@ func (service *AttendanceService) GetAttendanceForLeaderPage(page, pageSize int,
 		Where("c.leader_document = ?", leaderDocument).
 		Offset(offset).Limit(pageSize).
 		Find(&attendance).Error
+
 	if err != nil {
 		return nil, err
 	}
@@ -279,23 +281,25 @@ func (service *AttendanceService) GetAttendanceForLeaderPage(page, pageSize int,
 	folderPath := "attendance_photos"
 
 	for i := range attendance {
-		photoName := attendance[i].PhotoArrival
+		// Process PhotoArrival
+		photoArrivalName := attendance[i].PhotoArrival
+		photoArrivalPath := filepath.Join(folderPath, photoArrivalName)
 
-		// if photoName == "" {
-		// 	continue
-		// }
-
-		imagePath := filepath.Join(folderPath, photoName)
-
-		imageData, err := ioutil.ReadFile(imagePath)
-		if err != nil {
-			attendance[i].PhotoArrival = ""
-			continue
+		imageArrivalData, err := ioutil.ReadFile(photoArrivalPath)
+		if err == nil {
+			base64ImageArrival := base64.StdEncoding.EncodeToString(imageArrivalData)
+			attendance[i].PhotoArrival = base64ImageArrival
 		}
 
-		base64Image := base64.StdEncoding.EncodeToString(imageData)
+		// Process PhotoDeparture
+		photoDepartureName := attendance[i].PhotoDeparture
+		photoDeparturePath := filepath.Join(folderPath, photoDepartureName)
 
-		attendance[i].PhotoArrival = base64Image
+		imageDepartureData, err := ioutil.ReadFile(photoDeparturePath)
+		if err == nil {
+			base64ImageDeparture := base64.StdEncoding.EncodeToString(imageDepartureData)
+			attendance[i].PhotoDeparture = base64ImageDeparture
+		}
 	}
 
 	return attendance, nil
