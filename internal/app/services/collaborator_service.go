@@ -2,6 +2,7 @@ package services
 
 import (
 	"errors"
+	"math"
 
 	"github.com/DevEdwinF/smartback.git/internal/app/models"
 	"github.com/DevEdwinF/smartback.git/internal/config"
@@ -31,20 +32,28 @@ func ValidateCollaborator() ([]entity.Collaborators, error) {
 	return collaboratorWithSchedule, nil
 }
 
-func GetCollaboratorPage(page, pageSize int) ([]entity.Collaborators, error) {
-	offset := (page - 1) * pageSize
+func GetCollaboratorPage(paginate entity.Paginate) (entity.Pagination, error) {
+	offset := (paginate.Page - 1) * paginate.Limit
+	var count int64
 	collaboratorWithSchedule := []entity.Collaborators{}
 
 	if err := config.DB.Table("collaborators").
 		Select("*").
 		Order("id DESC").
-		Offset(offset).Limit(pageSize).
+		Count(&count).
+		Offset(offset).Limit(paginate.Limit).
 		Scan(&collaboratorWithSchedule).
 		Error; err != nil {
-		return nil, err
+		return entity.Pagination{}, err
 	}
 
-	return collaboratorWithSchedule, nil
+	return entity.Pagination{
+		Page:      paginate.Page,
+		Limit:     paginate.Limit,
+		TotalPage: int(math.Ceil(float64(count) / float64(paginate.Limit))),
+		TotalRows: count,
+		Rows:      collaboratorWithSchedule,
+	}, nil
 }
 
 func GetCollaboratorForLeader(leaderDocument string) ([]entity.Collaborators, error) {

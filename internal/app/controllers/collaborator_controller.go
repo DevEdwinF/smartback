@@ -3,7 +3,6 @@ package controllers
 import (
 	"errors"
 	"net/http"
-	"strconv"
 
 	"github.com/DevEdwinF/smartback.git/internal/app/models"
 	"github.com/DevEdwinF/smartback.git/internal/app/services"
@@ -15,16 +14,14 @@ import (
 )
 
 func GetAllCollaboratorsController(c echo.Context) error {
-	page, err := strconv.Atoi(c.QueryParam("page"))
-	if err != nil {
-	}
 
-	pageSize, err := strconv.Atoi(c.QueryParam("pageSize"))
-	if err != nil {
-		pageSize = 200
-	}
+	paginate := entity.Paginate{}
 
-	collaborators, err := services.GetCollaboratorPage(page, pageSize)
+	c.Bind(&paginate)
+
+	paginate.SetDefault()
+
+	collaborators, err := services.GetCollaboratorPage(paginate)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "No se encuentra el colaborador"})
 	}

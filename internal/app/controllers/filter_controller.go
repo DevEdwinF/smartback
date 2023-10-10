@@ -18,6 +18,7 @@ func NewController(filterService *services.FilterService) *Controller {
 }
 
 func (c *Controller) CollaboratorFilterHandler(ctx echo.Context) error {
+
 	firstName := ctx.QueryParam("firstName")
 	lastName := ctx.QueryParam("lastName")
 	email := ctx.QueryParam("email")
