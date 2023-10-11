@@ -40,45 +40,6 @@ type CollaboratorFilter struct {
 	LeaderDocument string
 }
 
-/*
-	 func (c *CollaboratorFilter) BuildQuery() string {
-		query := ""
-		if c.Document != "" {
-			query += " OR document = " + c.Document
-		}
-		if c.FName != "" {
-			query += " OR f_name = " + c.FName
-		}
-		if c.LName != "" {
-			query += " OR l_name = " + c.LName
-		}
-		if c.Bmail != "" {
-			query += " OR bmail = " + c.Bmail
-		}
-		if c.Email != "" {
-			query += " OR email = " + c.Email
-		}
-		if c.Position != "" {
-			query += " OR position = " + c.Position
-		}
-		if c.State != "" {
-			query += " OR state = " + c.State
-		}
-		if c.Leader != "" {
-			query += " OR leader = " + c.Leader
-		}
-		if c.LeaderDocument != "" {
-			query += " OR leader_document = " + c.LeaderDocument
-		}
-		if c.Subprocess != "" {
-			query += " OR subprocess = " + c.Subprocess
-		}
-		if c.Headquarters != "" {
-			query += " OR headquarters = " + c.Headquarters
-		}
-		return query
-	}
-*/
 type CollaboratorsDataEntity struct {
 	Collaborators
 	Schedules

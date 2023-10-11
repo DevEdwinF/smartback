@@ -27,7 +27,7 @@ type UserAttendanceData struct {
 	FName            string    `json:"f_name" query:"f_name"`
 	LName            string    `json:"l_name" query:"l_name"`
 	Email            string    `json:"email" query:"email"`
-	Bmail            string    `json:"bmail" query:"bmail"`
+	Bmail            string    `json:"bmail" query:"b_mail"`
 	Location         string    `json:"location" query:"location"`
 	Arrival          string    `json:"arrival" query:"arrival"`
 	Departure        string    `json:"departure" query:"departure"`
@@ -35,6 +35,7 @@ type UserAttendanceData struct {
 	LeaderDocument   string    `json:"leader_document" query:"leader_document"`
 	Position         string    `json:"position" query:"position"`
 	Subprocess       string    `json:"sub_process" query:"sub_process"`
+	Headquarters     string    `json:"headquarters" query:"headquarters"`
 	Late             *bool     `json:"late" query:"late"`
 	PhotoArrival     string    `json:"photo_arrival"`
 	PhotoDeparture   string    `json:"photo_departure"`
@@ -44,6 +45,7 @@ type UserAttendanceData struct {
 type AttendanceFilter struct {
 	UserAttendanceData
 	Paginate
+	LeaderDocument string
 }
 
 type ValidateSchedule struct {

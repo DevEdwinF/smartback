@@ -46,6 +46,8 @@ func (controller *AttendanceController) GetAllAttendance(c echo.Context) error {
 
 	c.Bind(&paginate)
 
+	paginate.SetDefault()
+
 	attendance, err := controller.Service.GetAttendancePage(paginate)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "No se encuentra el colaborador"})
@@ -70,6 +72,8 @@ func (controller *AttendanceController) GetAttendanceForLeader(c echo.Context) e
 	filters := entity.AttendanceFilter{}
 
 	c.Bind(&filters)
+
+	filters.SetDefault()
 
 	if userToken == nil {
 		return echo.NewHTTPError(http.StatusUnauthorized, "Token de usuario no encontrado")

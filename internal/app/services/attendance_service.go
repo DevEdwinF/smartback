@@ -237,14 +237,19 @@ func (service *AttendanceService) GetAttendancePage(filter entity.AttendanceFilt
 	utils.BuildFilters("l_name", filter.LName, "OR", &where)
 	utils.BuildFilters("bmail", filter.Bmail, "OR", &where)
 	utils.BuildFilters("email", filter.Email, "OR", &where)
-	utils.BuildFilters("position", filter.Position, "OR", &where)
+	utils.BuildFilters("arrival", filter.Arrival, "OR", &where)
+	utils.BuildFilters("departure", filter.Departure, "OR", &where)
 	utils.BuildFilters("leader", filter.Leader, "OR", &where)
-	utils.BuildFilters("subprocess", filter.Subprocess, "OR", &where)
 	utils.BuildFilters("position", filter.Position, "OR", &where)
+	utils.BuildFilters("headqarters", filter.Headquarters, "OR", &where)
+	utils.BuildFilters("subprocess", filter.Subprocess, "OR", &where)
+	utils.BuildFilters("location", filter.Location, "OR", &where)
 
 	err := config.DB.Table("attendances a").
 		Select("c.f_name, c.l_name, c.email, c.document, a.*").
 		Joins("INNER JOIN collaborators c on c.id = a.fk_collaborator_id").
+		Where(where).
+		Count(&count).
 		Offset(offset).Limit(filter.Limit).
 		Scan(&attendance).Error
 	if err != nil {
@@ -292,7 +297,7 @@ func (service *AttendanceService) GetAttendanceForLeaderPage(filter entity.Atten
 	utils.BuildFilters("document", filter.Document, "OR", &where)
 	utils.BuildFilters("f_name", filter.FName, "OR", &where)
 	utils.BuildFilters("l_name", filter.LName, "OR", &where)
-	utils.BuildFilters("bmail", filter.Bmail, "OR", &where)
+	utils.BuildFilters("b_mail", filter.Bmail, "OR", &where)
 	utils.BuildFilters("email", filter.Email, "OR", &where)
 	utils.BuildFilters("position", filter.Position, "OR", &where)
 	utils.BuildFilters("leader", filter.Leader, "OR", &where)
