@@ -7,6 +7,7 @@ import (
 	"github.com/DevEdwinF/smartback.git/internal/app/models"
 	"github.com/DevEdwinF/smartback.git/internal/config"
 	"github.com/DevEdwinF/smartback.git/internal/infrastructure/entity"
+	"github.com/DevEdwinF/smartback.git/internal/utils"
 	"gorm.io/gorm"
 )
 
@@ -32,44 +33,82 @@ func ValidateCollaborator() ([]entity.Collaborators, error) {
 	return collaboratorWithSchedule, nil
 }
 
-func GetCollaboratorPage(paginate entity.Paginate) (entity.Pagination, error) {
-	offset := (paginate.Page - 1) * paginate.Limit
+func GetCollaboratorPage(filter entity.CollaboratorFilter) (entity.Pagination, error) {
+	offset := (filter.Page - 1) * filter.Limit
 	var count int64
-	collaboratorWithSchedule := []entity.Collaborators{}
 
-	if err := config.DB.Table("collaborators").
-		Select("*").
+	collaborator := []models.Collaborators{}
+	var where string
+	utils.BuildFilters("document", filter.Document, "OR", &where)
+	utils.BuildFilters("f_name", filter.FName, "OR", &where)
+	utils.BuildFilters("l_name", filter.LName, "OR", &where)
+	utils.BuildFilters("bmail", filter.Bmail, "OR", &where)
+	utils.BuildFilters("email", filter.Email, "OR", &where)
+	utils.BuildFilters("position", filter.Position, "OR", &where)
+	utils.BuildFilters("state", filter.State, "OR", &where)
+	utils.BuildFilters("leader", filter.Leader, "OR", &where)
+	utils.BuildFilters("leader_document", filter.LeaderDocument, "OR", &where)
+	utils.BuildFilters("subprocess", filter.Subprocess, "OR", &where)
+	utils.BuildFilters("headquarters", filter.Headquarters, "OR", &where)
+
+	err := config.DB.Table("collaborators").Select("*").
+		Where(where).
 		Order("id DESC").
 		Count(&count).
-		Offset(offset).Limit(paginate.Limit).
-		Scan(&collaboratorWithSchedule).
-		Error; err != nil {
+		Offset(offset).Limit(filter.Limit).
+		Scan(&collaborator).Error
+	if err != nil {
 		return entity.Pagination{}, err
 	}
 
 	return entity.Pagination{
-		Page:      paginate.Page,
-		Limit:     paginate.Limit,
-		TotalPage: int(math.Ceil(float64(count) / float64(paginate.Limit))),
+		Page:      filter.Page,
+		Limit:     filter.Limit,
+		TotalPage: int(math.Ceil(float64(count) / float64(filter.Limit))),
 		TotalRows: count,
-		Rows:      collaboratorWithSchedule,
+		Rows:      collaborator,
 	}, nil
 }
 
-func GetCollaboratorForLeader(leaderDocument string) ([]entity.Collaborators, error) {
-	collaboratorWithSchedule := []entity.Collaborators{}
+func GetCollaboratorForLeader(filter entity.CollaboratorFilter) (entity.Pagination, error) {
+	offset := (filter.Page - 1) * filter.Limit
+	var count int64
 
-	if err := config.DB.Table("collaborators").
+	collaborator := []models.Collaborators{}
+
+	var where string
+	utils.BuildFilters("document", filter.Document, "OR", &where)
+	utils.BuildFilters("f_name", filter.FName, "OR", &where)
+	utils.BuildFilters("l_name", filter.LName, "OR", &where)
+	utils.BuildFilters("bmail", filter.Bmail, "OR", &where)
+	utils.BuildFilters("email", filter.Email, "OR", &where)
+	utils.BuildFilters("position", filter.Position, "OR", &where)
+	utils.BuildFilters("state", filter.State, "OR", &where)
+	utils.BuildFilters("leader", filter.Leader, "OR", &where)
+	utils.BuildFilters("subprocess", filter.Subprocess, "OR", &where)
+	utils.BuildFilters("headquarters", filter.Headquarters, "OR", &where)
+	utils.BuildFilters("leader_document", filter.LeaderDocument, "AND", &where)
+
+	err := config.DB.Table("collaborators").
 		Select("*").
-		Where("leader_document = ?", leaderDocument).
+		Table("collaborators").
+		Where(where).
 		Order("id DESC").
-		// Limit(500).
-		Scan(&collaboratorWithSchedule).
-		Error; err != nil {
-		return nil, err
+		Count(&count).
+		Offset(offset).Limit(filter.Limit).
+		Scan(&collaborator).Error
+
+	if err != nil {
+		return entity.Pagination{}, err
 	}
 
-	return collaboratorWithSchedule, nil
+	return entity.Pagination{
+		Page:      filter.Page,
+		Limit:     filter.Limit,
+		TotalPage: int(math.Ceil(float64(count) / float64(filter.Limit))),
+		TotalRows: count,
+		Rows:      collaborator,
+	}, nil
 }
 
 func GetCollaborator(document string) (*models.Collaborators, error) {

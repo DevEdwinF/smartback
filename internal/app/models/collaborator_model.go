@@ -19,8 +19,8 @@ import "time"
 } */
 
 type Collaborators struct {
-	Id             int    `gorm:"column:id"`
-	Document       string `gorm:"column:document"`
+	Id             int    `gorm:"column:id" json:"id_collaborator"`
+	Document       string `gorm:"column:document" json:"document"`
 	FName          string `gorm:"column:f_name"`
 	LName          string `gorm:"column:l_name"`
 	Email          string `gorm:"column:email"`
@@ -34,6 +34,7 @@ type Collaborators struct {
 	CreatedAt      time.Time
 }
 
+// TableName specifies the table name for the mode
 type CollaboratorsData struct {
 	Collaborators
 	Schedules

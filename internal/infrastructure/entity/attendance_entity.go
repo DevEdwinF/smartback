@@ -23,20 +23,25 @@ type AttendanceEntity struct {
 type UserAttendanceData struct {
 	// FkDocumentId int       `json:"document"`
 	FkCollaboratorId int       `json:"fk_collaborator_id"`
-	Document         string    `json:"document"`
-	FName            string    `json:"f_name"`
-	LName            string    `json:"l_name"`
-	Email            string    `json:"email"`
-	Location         string    `json:"location"`
-	Arrival          string    `json:"arrival"`
-	Departure        string    `json:"departure"`
-	Leader           string    `json:"leader"`
-	LeaderDocument   string    `json:"leader_document"`
-	Subprocess       string    `json:"sub_process"`
-	Late             *bool     `json:"late"`
+	Document         string    `json:"document" query:"document"`
+	FName            string    `json:"f_name" query:"f_name"`
+	LName            string    `json:"l_name" query:"l_name"`
+	Email            string    `json:"email" query:"email"`
+	Location         string    `json:"location" query:"location"`
+	Arrival          string    `json:"arrival" query:"arrival"`
+	Departure        string    `json:"departure" query:"departure"`
+	Leader           string    `json:"leader" query:"leader"`
+	LeaderDocument   string    `json:"leader_document" query:"leader_document"`
+	Subprocess       string    `json:"sub_process" query:"sub_process"`
+	Late             *bool     `json:"late" query:"late"`
 	PhotoArrival     string    `json:"photo_arrival"`
 	PhotoDeparture   string    `json:"photo_departure"`
 	CreatedAt        time.Time `json:"date"`
+}
+
+type AttendanceFilter struct {
+	UserAttendanceData
+	Paginate
 }
 
 type ValidateSchedule struct {

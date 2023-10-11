@@ -15,7 +15,7 @@ import (
 
 func GetAllCollaboratorsController(c echo.Context) error {
 
-	paginate := entity.Paginate{}
+	paginate := entity.CollaboratorFilter{}
 
 	c.Bind(&paginate)
 
@@ -31,6 +31,12 @@ func GetAllCollaboratorsController(c echo.Context) error {
 
 func GetCollaboratorForLeader(c echo.Context) error {
 	userToken := c.Get("userToken")
+
+	filters := entity.CollaboratorFilter{}
+
+	c.Bind(&filters)
+
+	filters.SetDefault()
 
 	if userToken == nil {
 		return echo.NewHTTPError(http.StatusUnauthorized, "Token de usuario no encontrado")
@@ -51,7 +57,10 @@ func GetCollaboratorForLeader(c echo.Context) error {
 		})
 	}
 
-	collaborator, err := services.GetCollaboratorForLeader(leaderDocument)
+	filters.LeaderDocument = leaderDocument
+
+	collaborator, err := services.GetCollaboratorForLeader(filters)
+
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
 			"error": "Error obteniendo la asistencia",

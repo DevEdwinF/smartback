@@ -10,7 +10,7 @@ var conform = modifiers.New()
 
 type Paginate struct {
 	Page  int `query:"page" mod:"default=1"`
-	Limit int `query:"limit" mod:"default=100"`
+	Limit int `query:"limit" mod:"default=5"`
 }
 
 type Pagination struct {

@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/DevEdwinF/smartback.git/internal/app/services"
+	"github.com/DevEdwinF/smartback.git/internal/infrastructure/entity"
 	"github.com/labstack/echo/v4"
 )
 
@@ -19,16 +20,12 @@ func NewController(filterService *services.FilterService) *Controller {
 
 func (c *Controller) CollaboratorFilterHandler(ctx echo.Context) error {
 
-	firstName := ctx.QueryParam("firstName")
-	lastName := ctx.QueryParam("lastName")
-	email := ctx.QueryParam("email")
-	state := ctx.QueryParam("state")
-	leader := ctx.QueryParam("leader")
-	subprocess := ctx.QueryParam("subprocess")
-	headquarters := ctx.QueryParam("headquarters")
-	position := ctx.QueryParam("position")
+	filter := entity.CollaboratorFilter{}
+	ctx.Bind(&filter)
 
-	collaborator, err := c.filterService.CollaboratorFilter(firstName, lastName, email, state, leader, subprocess, headquarters, position)
+	filter.SetDefault()
+
+	collaborator, err := c.filterService.CollaboratorFilter(filter)
 	if err != nil {
 		return ctx.JSON(http.StatusInternalServerError, map[string]interface{}{
 			"error": "Colaborador no existe",

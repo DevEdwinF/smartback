@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"fmt"
 	"net/http"
 	"os"
 	"strings"
@@ -26,8 +25,6 @@ func AuthToken(next echo.HandlerFunc) echo.HandlerFunc {
 		if err != nil || !token.Valid {
 			return echo.NewHTTPError(http.StatusUnauthorized, "Invalid token: Token is not valid")
 		}
-
-		fmt.Println("Valid Token:", tokenString)
 
 		c.Set("userToken", token)
 		return next(c)

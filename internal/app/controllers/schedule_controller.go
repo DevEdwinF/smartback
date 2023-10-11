@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/DevEdwinF/smartback.git/internal/app/models"
@@ -21,11 +22,13 @@ func GetAllCollaboratorsSchedule(c echo.Context) error {
 }
 
 func AssignSchedulesToCollaborator(c echo.Context) error {
-	var schedules []entity.Schedules // Actualizar a la estructura correcta de Schedule
+	var schedules []entity.Schedules
 
 	if err := c.Bind(&schedules); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "Formato de datos inválido")
 	}
+
+	fmt.Println(schedules)
 
 	var collaborator entity.CollaboratorsDataEntity
 	err := config.DB.Table("collaborators").Select("*").
