@@ -63,7 +63,7 @@ func GetCollaboratorForLeader(c echo.Context) error {
 
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
-			"error": "Error obteniendo la asistencia",
+			"error": "Error obteniendo el colaborador",
 		})
 	}
 	return c.JSON(http.StatusOK, collaborator)

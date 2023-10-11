@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
-	"strconv"
 	"time"
 
 	"github.com/DevEdwinF/smartback.git/internal/app/services"
@@ -43,18 +42,13 @@ func (ac *AttendanceController) SaveRegisterAttendance(c echo.Context) error {
 }
 
 func (controller *AttendanceController) GetAllAttendance(c echo.Context) error {
-	page, err := strconv.Atoi(c.QueryParam("page"))
-	if err != nil {
-	}
+	paginate := entity.AttendanceFilter{}
 
-	pageSize, err := strconv.Atoi(c.QueryParam("pageSize"))
-	if err != nil {
-		pageSize = 100
-	}
+	c.Bind(&paginate)
 
-	attendance, err := controller.Service.GetAttendancePage(page, pageSize)
+	attendance, err := controller.Service.GetAttendancePage(paginate)
 	if err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "No se encuentra el colaborador"})
 	}
 
 	return c.JSON(http.StatusOK, attendance)
@@ -73,6 +67,10 @@ func (controller *AttendanceController) GetAttendanceForLeader(c echo.Context) e
 
 	userToken := c.Get("userToken")
 
+	filters := entity.AttendanceFilter{}
+
+	c.Bind(&filters)
+
 	if userToken == nil {
 		return echo.NewHTTPError(http.StatusUnauthorized, "Token de usuario no encontrado")
 	}
@@ -86,23 +84,16 @@ func (controller *AttendanceController) GetAttendanceForLeader(c echo.Context) e
 
 	leaderDocument, ok := claims["document"].(string)
 
+	filters.LeaderDocument = leaderDocument
+
 	if !ok {
 		return echo.NewHTTPError(http.StatusBadRequest, map[string]interface{}{
 			"error": "Este usuario no tiene ningún documento de líder asignado",
 		})
 	}
 
-	page, err := strconv.Atoi(c.QueryParam("page"))
-	if err != nil {
-	}
-
-	pageSize, err := strconv.Atoi(c.QueryParam("pageSize"))
-	if err != nil {
-		pageSize = 100
-	}
-
 	attendanceService := &services.AttendanceService{}
-	attendance, err := attendanceService.GetAttendanceForLeaderPage(page, pageSize, leaderDocument)
+	attendance, err := attendanceService.GetAttendanceForLeaderPage(filters)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
 			"error": "Error obteniendo la asistencia",

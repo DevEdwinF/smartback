@@ -10,6 +10,7 @@ import (
 	"image/png"
 	"io/ioutil"
 	"log"
+	"math"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -19,6 +20,7 @@ import (
 	"github.com/DevEdwinF/smartback.git/internal/app/models"
 	"github.com/DevEdwinF/smartback.git/internal/config"
 	"github.com/DevEdwinF/smartback.git/internal/infrastructure/entity"
+	"github.com/DevEdwinF/smartback.git/internal/utils"
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
 )
@@ -224,18 +226,29 @@ func (s *AttendanceService) RegisterAttendance(attendance entity.AttendanceEntit
 	return errors.New("Estado inválido")
 }
 
-func (service *AttendanceService) GetAttendancePage(page, pageSize int) ([]entity.UserAttendanceData, error) {
-	offset := (page - 1) * pageSize
+func (service *AttendanceService) GetAttendancePage(filter entity.AttendanceFilter) (entity.Pagination, error) {
+	offset := (filter.Page - 1) * filter.Limit
+	var count int64
 
 	attendance := []entity.UserAttendanceData{}
+	var where string
+	utils.BuildFilters("document", filter.Document, "OR", &where)
+	utils.BuildFilters("f_name", filter.FName, "OR", &where)
+	utils.BuildFilters("l_name", filter.LName, "OR", &where)
+	utils.BuildFilters("bmail", filter.Bmail, "OR", &where)
+	utils.BuildFilters("email", filter.Email, "OR", &where)
+	utils.BuildFilters("position", filter.Position, "OR", &where)
+	utils.BuildFilters("leader", filter.Leader, "OR", &where)
+	utils.BuildFilters("subprocess", filter.Subprocess, "OR", &where)
+	utils.BuildFilters("position", filter.Position, "OR", &where)
+
 	err := config.DB.Table("attendances a").
 		Select("c.f_name, c.l_name, c.email, c.document, a.*").
 		Joins("INNER JOIN collaborators c on c.id = a.fk_collaborator_id").
-		Offset(offset).Limit(pageSize).
+		Offset(offset).Limit(filter.Limit).
 		Scan(&attendance).Error
-
 	if err != nil {
-		return nil, err
+		return entity.Pagination{}, err
 	}
 
 	folderPath := "attendance_photos"
@@ -260,22 +273,45 @@ func (service *AttendanceService) GetAttendancePage(page, pageSize int) ([]entit
 		}
 	}
 
-	return attendance, nil
+	return entity.Pagination{
+		Page:      filter.Page,
+		Limit:     filter.Limit,
+		TotalPage: int(math.Ceil(float64(count) / float64(filter.Limit))),
+		TotalRows: count,
+		Rows:      attendance,
+	}, nil
 }
 
-func (service *AttendanceService) GetAttendanceForLeaderPage(page, pageSize int, leaderDocument string) ([]entity.UserAttendanceData, error) {
-	offset := (page - 1) * pageSize
+func (service *AttendanceService) GetAttendanceForLeaderPage(filter entity.AttendanceFilter) (entity.Pagination, error) {
+	offset := (filter.Page - 1) * filter.Limit
+	var count int64
 
 	attendance := []entity.UserAttendanceData{}
+
+	var where string
+	utils.BuildFilters("document", filter.Document, "OR", &where)
+	utils.BuildFilters("f_name", filter.FName, "OR", &where)
+	utils.BuildFilters("l_name", filter.LName, "OR", &where)
+	utils.BuildFilters("bmail", filter.Bmail, "OR", &where)
+	utils.BuildFilters("email", filter.Email, "OR", &where)
+	utils.BuildFilters("position", filter.Position, "OR", &where)
+	utils.BuildFilters("leader", filter.Leader, "OR", &where)
+	utils.BuildFilters("subprocess", filter.Subprocess, "OR", &where)
+	utils.BuildFilters("position", filter.Position, "OR", &where)
+	utils.BuildFilters("leader_document", filter.LeaderDocument, "AND", &where)
+
 	err := config.DB.Table("attendances a").
 		Select("c.f_name, c.l_name, c.email, c.leader, c.document, a.*").
 		Joins("INNER JOIN collaborators c ON c.id = a.fk_collaborator_id").
-		Where("c.leader_document = ?", leaderDocument).
-		Offset(offset).Limit(pageSize).
-		Find(&attendance).Error
+		Where(where).
+		Order("created_at DESC").
+		Count(&count).
+		Offset(offset).
+		Limit(filter.Limit).
+		Scan(&attendance).Error
 
 	if err != nil {
-		return nil, err
+		return entity.Pagination{}, err
 	}
 
 	folderPath := "attendance_photos"
@@ -302,7 +338,13 @@ func (service *AttendanceService) GetAttendanceForLeaderPage(page, pageSize int,
 		}
 	}
 
-	return attendance, nil
+	return entity.Pagination{
+		Page:      filter.Page,
+		Limit:     filter.Limit,
+		TotalPage: int(math.Ceil(float64(count) / float64(filter.Limit))),
+		TotalRows: count,
+		Rows:      attendance,
+	}, nil
 }
 
 func (service *AttendanceService) GetAllAttendanceForToLate() ([]entity.UserAttendanceData, error) {
