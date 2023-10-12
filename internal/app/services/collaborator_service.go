@@ -2,7 +2,6 @@ package services
 
 import (
 	"errors"
-	"fmt"
 	"math"
 
 	"github.com/DevEdwinF/smartback.git/internal/app/models"
@@ -98,8 +97,6 @@ func GetCollaboratorForLeader(filter entity.CollaboratorFilter) (entity.Paginati
 		Count(&count).
 		Offset(offset).Limit(filter.Limit).
 		Scan(&collaborator).Error
-
-	fmt.Print("esta es la cuenta: ", count)
 
 	if err != nil {
 		return entity.Pagination{}, err

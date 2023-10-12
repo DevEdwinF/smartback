@@ -233,6 +233,22 @@ func (service *AttendanceService) GetAttendancePage(filter entity.AttendanceFilt
 	attendance := []entity.UserAttendanceData{}
 	var where string
 	utils.BuildFilters("document", filter.Document, "OR", &where)
+
+	/* var createdAt time.Time
+	if filter.CreatedAt.String() != "" {
+		var err error
+		createdAt, err = time.Parse("2006-01-02", filter.CreatedAt.String())
+		if err != nil {
+			return entity.Pagination{}, err
+		}
+	} */
+
+	/* utils.BuildFilters("created_at", createdAt.Format("2006-01-02"), "OR", &where)
+	 */
+
+	/* if !createdAt.IsZero() {
+		utils.BuildFilters("a.created_at", createdAt.Format("2006-01-02"), "OR", &where)
+	} */
 	utils.BuildFilters("f_name", filter.FName, "OR", &where)
 	utils.BuildFilters("l_name", filter.LName, "OR", &where)
 	utils.BuildFilters("bmail", filter.Bmail, "OR", &where)
@@ -249,9 +265,13 @@ func (service *AttendanceService) GetAttendancePage(filter entity.AttendanceFilt
 		Select("c.f_name, c.l_name, c.email, c.document, a.*").
 		Joins("INNER JOIN collaborators c on c.id = a.fk_collaborator_id").
 		Where(where).
+		Order("created_at DESC").
 		Count(&count).
 		Offset(offset).Limit(filter.Limit).
 		Scan(&attendance).Error
+	if err != nil {
+		return entity.Pagination{}, err
+	}
 	if err != nil {
 		return entity.Pagination{}, err
 	}
