@@ -42,13 +42,18 @@ func (ac *AttendanceController) SaveRegisterAttendance(c echo.Context) error {
 }
 
 func (controller *AttendanceController) GetAllAttendance(c echo.Context) error {
-	paginate := entity.AttendanceFilter{}
+	filter := entity.AttendanceFilter{}
 
-	c.Bind(&paginate)
+	if err := c.Bind(&filter); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
 
-	paginate.SetDefault()
+	/* 	fmt.Printf("%+v", *filter.Late)
+	   	fmt.Printf("%+v", *filter.EarlyDeparture) */
 
-	attendance, err := controller.Service.GetAttendancePage(paginate)
+	filter.SetDefault()
+
+	attendance, err := controller.Service.GetAttendancePage(filter)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "No se encuentra el colaborador"})
 	}

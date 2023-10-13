@@ -37,10 +37,10 @@ type UserAttendanceData struct {
 	Subprocess       string    `json:"sub_process" query:"sub_process"`
 	Headquarters     string    `json:"headquarters" query:"headquarters"`
 	Late             *bool     `json:"late" query:"late"`
-	EarlyDeparture   *bool     `json:"early_edaprture" query:"early_departure"`
+	EarlyDeparture   *bool     `json:"early_departure" query:"early_departure"`
 	PhotoArrival     string    `json:"photo_arrival"`
 	PhotoDeparture   string    `json:"photo_departure"`
-	CreatedAt        time.Time `json:"date" query:"created_at"`
+	CreatedAt        time.Time `json:"date" query:"date"`
 }
 
 type AttendanceFilter struct {

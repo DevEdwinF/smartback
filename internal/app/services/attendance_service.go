@@ -120,7 +120,7 @@ func (s *AttendanceService) RegisterAttendance(attendance entity.AttendanceEntit
 
 	earlyDeparture := false
 
-	if !departureScheduled.IsZero() && timeNow.After(departureScheduled) {
+	if !departureScheduled.IsZero() && timeNow.Before(departureScheduled) {
 		earlyDeparture = true
 	}
 
@@ -135,8 +135,8 @@ func (s *AttendanceService) RegisterAttendance(attendance entity.AttendanceEntit
 		}
 	}
 
-	/* folderPath := "/app/attendance_photos" */
-	folderPath := "attendance_photos"
+	folderPath := "/app/attendance_photos"
+
 	err = os.MkdirAll(folderPath, 0755)
 	if err != nil {
 		log.Println("Error creating directory:", err)
@@ -232,23 +232,9 @@ func (service *AttendanceService) GetAttendancePage(filter entity.AttendanceFilt
 
 	attendance := []entity.UserAttendanceData{}
 	var where string
+	utils.BuildFilters("a.created_at", filter.CreatedAt, "OR", &where)
+
 	utils.BuildFilters("document", filter.Document, "OR", &where)
-
-	/* var createdAt time.Time
-	if filter.CreatedAt.String() != "" {
-		var err error
-		createdAt, err = time.Parse("2006-01-02", filter.CreatedAt.String())
-		if err != nil {
-			return entity.Pagination{}, err
-		}
-	} */
-
-	/* utils.BuildFilters("created_at", createdAt.Format("2006-01-02"), "OR", &where)
-	 */
-
-	/* if !createdAt.IsZero() {
-		utils.BuildFilters("a.created_at", createdAt.Format("2006-01-02"), "OR", &where)
-	} */
 	utils.BuildFilters("f_name", filter.FName, "OR", &where)
 	utils.BuildFilters("l_name", filter.LName, "OR", &where)
 	utils.BuildFilters("bmail", filter.Bmail, "OR", &where)
@@ -260,6 +246,8 @@ func (service *AttendanceService) GetAttendancePage(filter entity.AttendanceFilt
 	utils.BuildFilters("headqarters", filter.Headquarters, "OR", &where)
 	utils.BuildFilters("subprocess", filter.Subprocess, "OR", &where)
 	utils.BuildFilters("location", filter.Location, "OR", &where)
+	utils.BuildFilters("late", filter.Late, "AND", &where)
+	utils.BuildFilters("early_departure", filter.EarlyDeparture, "AND", &where)
 
 	err := config.DB.Table("attendances a").
 		Select("c.f_name, c.l_name, c.email, c.document, a.*").
@@ -276,7 +264,7 @@ func (service *AttendanceService) GetAttendancePage(filter entity.AttendanceFilt
 		return entity.Pagination{}, err
 	}
 
-	folderPath := "attendance_photos"
+	folderPath := "/app/attendance_photos"
 
 	for i := range attendance {
 		photoArrivalName := attendance[i].PhotoArrival
@@ -314,16 +302,23 @@ func (service *AttendanceService) GetAttendanceForLeaderPage(filter entity.Atten
 	attendance := []entity.UserAttendanceData{}
 
 	var where string
+	utils.BuildFilters("a.created_at", filter.CreatedAt, "OR", &where)
+
 	utils.BuildFilters("document", filter.Document, "OR", &where)
 	utils.BuildFilters("f_name", filter.FName, "OR", &where)
 	utils.BuildFilters("l_name", filter.LName, "OR", &where)
-	utils.BuildFilters("b_mail", filter.Bmail, "OR", &where)
+	utils.BuildFilters("bmail", filter.Bmail, "OR", &where)
 	utils.BuildFilters("email", filter.Email, "OR", &where)
-	utils.BuildFilters("position", filter.Position, "OR", &where)
+	utils.BuildFilters("arrival", filter.Arrival, "OR", &where)
+	utils.BuildFilters("departure", filter.Departure, "OR", &where)
 	utils.BuildFilters("leader", filter.Leader, "OR", &where)
-	utils.BuildFilters("subprocess", filter.Subprocess, "OR", &where)
 	utils.BuildFilters("position", filter.Position, "OR", &where)
+	utils.BuildFilters("headqarters", filter.Headquarters, "OR", &where)
+	utils.BuildFilters("subprocess", filter.Subprocess, "OR", &where)
+	utils.BuildFilters("location", filter.Location, "OR", &where)
+	utils.BuildFilters("late", filter.Late, "AND", &where)
 	utils.BuildFilters("leader_document", filter.LeaderDocument, "AND", &where)
+	utils.BuildFilters("early_departure", filter.EarlyDeparture, "AND", &where)
 
 	err := config.DB.Table("attendances a").
 		Select("c.f_name, c.l_name, c.email, c.leader, c.document, a.*").
@@ -339,7 +334,7 @@ func (service *AttendanceService) GetAttendanceForLeaderPage(filter entity.Atten
 		return entity.Pagination{}, err
 	}
 
-	folderPath := "attendance_photos"
+	folderPath := "/app/attendance_photos"
 
 	for i := range attendance {
 		// Process PhotoArrival
@@ -374,9 +369,11 @@ func (service *AttendanceService) GetAttendanceForLeaderPage(filter entity.Atten
 
 func (service *AttendanceService) GetAllAttendanceForToLate() ([]entity.UserAttendanceData, error) {
 	attendance := []entity.UserAttendanceData{}
+	currentMonth := time.Now().Month()
 	err := config.DB.Table("collaborators c").
 		Select("c.f_name, c.l_name, c.email, c.leader, c.document, a.*").
 		Joins("INNER JOIN attendances a ON c.id = a.fk_collaborator_id").
+		Where("date_part('month', a.created_at) = ?", currentMonth).
 		Where("a.late = TRUE").
 		Where("EXISTS (SELECT 1 FROM attendances WHERE fk_collaborator_id = c.id AND late = TRUE HAVING COUNT(*) > 2)").
 		Find(&attendance).Error
@@ -420,11 +417,13 @@ func (service *AttendanceService) GetAllAttendanceForToLate() ([]entity.UserAtte
 // }
 
 func (service *AttendanceService) GetAttendanceForLeaderToLate(leaderDocument string) ([]entity.UserAttendanceData, error) {
+	currentMonth := time.Now().Month()
 	attendance := []entity.UserAttendanceData{}
 	err := config.DB.Table("collaborators c").
 		Select("c.f_name, c.l_name, c.email, c.leader, c.document, a.*").
 		Joins("INNER JOIN users u ON u.document = c.leader_document").
 		Joins("INNER JOIN attendances a ON c.id = a.fk_collaborator_id").
+		Where("date_part('month', a.created_at) = ?", currentMonth).
 		Where("u.document = ?", leaderDocument).
 		Where("a.late = TRUE").
 		Where("EXISTS (SELECT 1 FROM attendances WHERE fk_collaborator_id = c.id AND late = TRUE HAVING COUNT(*) > 2)").
