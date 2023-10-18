@@ -3,6 +3,7 @@ package payroll
 import (
 	"github.com/DevEdwinF/smartback.git/internal/app/controllers"
 	"github.com/DevEdwinF/smartback.git/internal/app/services"
+	"github.com/DevEdwinF/smartback.git/internal/config/middleware"
 	"github.com/labstack/echo/v4"
 )
 
@@ -11,5 +12,5 @@ func PayrollRouter(e *echo.Echo) {
 	payrollController := controllers.NewPayrollController(payrollService)
 
 	group := e.Group("/api/payroll")
-	group.GET("/hearquarters/all", payrollController.GetAllPayRoll /* middleware.AuthToken */)
+	group.GET("/hearquarters/all", payrollController.GetAllPayRoll, middleware.AuthToken)
 }

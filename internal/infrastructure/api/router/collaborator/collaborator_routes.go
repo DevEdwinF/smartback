@@ -11,7 +11,7 @@ func CollaboratorRoutes(e *echo.Echo) {
 	group := e.Group("/api/collaborator")
 
 	// group.POST("/save", controller.SaveCollaborator)
-	group.GET("/all", controllers.GetAllCollaboratorsController /* middleware.AuthToken */)
+	group.GET("/all", controllers.GetAllCollaboratorsController, middleware.AuthToken)
 	group.GET("/all/leader", controllers.GetCollaboratorForLeader, middleware.AuthToken)
 	group.GET("/find/:document", controllers.GetCollaborator, middleware.AuthToken)
 	group.DELETE("/delete/:doc", controllers.DeleteCollaborator, middleware.AuthToken)

@@ -135,7 +135,7 @@ func (s *AttendanceService) RegisterAttendance(attendance entity.AttendanceEntit
 		}
 	}
 
-	folderPath := "/app/attendance_photos"
+	folderPath := "attendance_photos"
 
 	err = os.MkdirAll(folderPath, 0755)
 	if err != nil {
