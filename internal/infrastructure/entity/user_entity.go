@@ -16,6 +16,12 @@ type UserData struct {
 	FkRoleId  int       `json:"rol"`
 }
 
+type UserFilter struct {
+	UserData
+	Paginate
+	RoleName string
+}
+
 type Users []UserData
 
 type Collaborators struct {

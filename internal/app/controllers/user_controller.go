@@ -3,7 +3,6 @@ package controllers
 import (
 	"net/http"
 
-	"github.com/DevEdwinF/smartback.git/internal/app/models"
 	"github.com/DevEdwinF/smartback.git/internal/app/services"
 	"github.com/DevEdwinF/smartback.git/internal/infrastructure/entity"
 	"github.com/labstack/echo/v4"
@@ -39,10 +38,17 @@ func (h *UserController) CreateUser(c echo.Context) error {
 }
 
 func (h *UserController) GetAllUsers(c echo.Context) error {
-	var users []models.User
-	err := h.userService.GetAllUsers(&users)
+	filter := entity.UserFilter{}
+
+	if err := c.Bind(&filter); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+
+	filter.SetDefault()
+
+	users, err := h.userService.GetAllUsers(filter)
 	if err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, "failed to get all users")
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "No se encuentra el colaborador"})
 	}
 
 	return c.JSON(http.StatusOK, users)

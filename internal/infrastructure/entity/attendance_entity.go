@@ -27,7 +27,7 @@ type UserAttendanceData struct {
 	FName            string    `json:"f_name" query:"f_name"`
 	LName            string    `json:"l_name" query:"l_name"`
 	Email            string    `json:"email" query:"email"`
-	Bmail            string    `json:"bmail" query:"b_mail"`
+	Bmail            string    `json:"bmail" query:"bmail"`
 	Location         string    `json:"location" query:"location"`
 	Arrival          string    `json:"arrival" query:"arrival"`
 	Departure        string    `json:"departure" query:"departure"`

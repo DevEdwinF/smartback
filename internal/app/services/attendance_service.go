@@ -250,16 +250,13 @@ func (service *AttendanceService) GetAttendancePage(filter entity.AttendanceFilt
 	utils.BuildFilters("early_departure", filter.EarlyDeparture, "AND", &where)
 
 	err := config.DB.Table("attendances a").
-		Select("c.f_name, c.l_name, c.email, c.document, a.*").
+		Select("c.f_name, c.l_name, c.email, c.position, c.subprocess, c.bmail, c.document, a.*").
 		Joins("INNER JOIN collaborators c on c.id = a.fk_collaborator_id").
 		Where(where).
 		Order("created_at DESC").
 		Count(&count).
 		Offset(offset).Limit(filter.Limit).
 		Scan(&attendance).Error
-	if err != nil {
-		return entity.Pagination{}, err
-	}
 	if err != nil {
 		return entity.Pagination{}, err
 	}

@@ -2,10 +2,12 @@ package services
 
 import (
 	"errors"
+	"math"
 
 	"github.com/DevEdwinF/smartback.git/internal/app/models"
 	"github.com/DevEdwinF/smartback.git/internal/config"
 	"github.com/DevEdwinF/smartback.git/internal/infrastructure/entity"
+	"github.com/DevEdwinF/smartback.git/internal/utils"
 	"gorm.io/gorm"
 )
 
@@ -29,16 +31,38 @@ func (s *UserService) CreateUser(user entity.UserData) error {
 	return nil
 }
 
-func (s *UserService) GetAllUsers(users *[]models.User) error {
+func (s *UserService) GetAllUsers(filter entity.UserFilter) (entity.Pagination, error) {
+
+	offset := (filter.Page - 1) * filter.Limit
+	var count int64
+	var where string
+	user := []models.User{}
+	utils.BuildFilters("document", filter.Document, "OR", &where)
+	utils.BuildFilters("f_name", filter.FName, "OR", &where)
+	utils.BuildFilters("l_name", filter.LName, "OR", &where)
+	utils.BuildFilters("email", filter.Email, "OR", &where)
+	utils.BuildFilters("role_name", filter.RoleName, "OR", &where)
+
 	err := config.DB.Table("users").
 		Select("users.*, roles.name as role_name").
 		Joins("INNER JOIN roles ON users.fk_role_id = roles.id").
-		Find(users).Error
+		Where(where).
+		Order("id DESC").
+		Count(&count).
+		Offset(offset).Limit(filter.Limit).
+		Scan(&user).Error
 	if err != nil {
-		return err
+		return entity.Pagination{}, err
 	}
 
-	return nil
+	return entity.Pagination{
+		Page:      filter.Page,
+		Limit:     filter.Limit,
+		TotalPage: int(math.Ceil(float64(count) / float64(filter.Limit))),
+		TotalRows: count,
+		Rows:      user,
+	}, nil
+
 }
 
 func (s *UserService) GetUserById(document string) (models.User, error) {
